@@ -45,41 +45,53 @@
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
-		function parseMsg(m){
-			var spl = m.split("\;");
-			if(spl.length > 3) return false; // When the chat message contains the split character
-			var msg = {
-				name : spl[0],
-				time : spl[1],
-				text : spl[2]
+			var socket = io();
+			var usr = ""; // username
+
+			$(document).ready(function(){
+				var path = window.location.pathname;
+				usr = path.replace('/chat/', '');
+				console.log("Username: " + usr);
+				socket.emit('hello', usr);
+			});
+			function parseMsg(m){
+				var spl = m.split("\;");
+				if(spl.length > 3) return false; // When the chat message contains the split character
+				var msg = {
+					name : spl[0],
+					time : spl[1],
+					text : spl[2]
+				}
+				return msg;
+			}	
+		
+			function createMsgBubble(name, time, msg){
+				var msgBubble = '<div class="bubble"><div class="head"><p class="name">' + name + '</p><p class="timestamp">' + time + '</p></div><p class="message">' + msg + '</p></div>';
+				return msgBubble;
+			}	
+		
+		
+			$(function () {
+				$('form').submit(function(){
+					socket.emit('chat message', usr + '\;' + getTime() + '\;' + $('#m').val());
+					$('#m').val('');
+					return false;
+				});
+				socket.on('chat message', function(msg){
+				var m = parseMsg(msg);
+				$('#messages').append(createMsgBubble(m.name, m.time, m.text));
+				window.scrollTo(0, document.body.scrollHeight);
+				});
+			});
+			
+			function getTime(){
+				var d = new Date();
+				var hours = d.getHours();
+				var minutes = d.getMinutes();
+				if(hours < 10) hours = "0" + String(hours);
+				if(minutes < 10) minutes = "0" + String(minutes);
+				return hours + ":" + minutes;
 			}
-			return msg;
-		}	
-	
-		function createMsgBubble(name, time, msg){
-			var msgBubble = '<div class="bubble"><div class="head"><p class="name">' + name + '</p><p class="timestamp">' + time + '</p></div><p class="message">' + msg + '</p></div>';
-			return msgBubble;
-		}	
-	
-	
-      $(function () {
-        var socket = io();
-        $('form').submit(function(){
-		  var d = new Date();
-		  var time = d.getHours() + ':' + d.getMinutes();
-		  var name = "Lordi";
-          socket.emit('chat message', name + '\;' + time + '\;' + $('#m').val());
-          $('#m').val('');
-          return false;
-        });
-        socket.on('chat message', function(msg){
-		  var m = parseMsg(msg);
-		
-		
-          $('#messages').append(createMsgBubble(m.name, m.time, m.text));
-          window.scrollTo(0, document.body.scrollHeight);
-        });
-      });
     </script>
   </body>
 </html>
