@@ -6,25 +6,20 @@ var port = process.env.PORT || 3000;
 
 var userHandler = require('./userHandler');
 
-// serve the css and js files to the browser
-// app.get('/css/*', function(req,res){
-//   http.use(app.sta __dirname , '/css/' , req.params[0]);
-// });
-// app.get('/js/*', function(req,res){
-//   res.sendFile(__dirname + '/js/' + req.params[0]);
-// });
-
+// This is to serve static files to the client
 app.use('/js', express.static('js'));
 app.use('/css', express.static('css'));
 app.use('/img', express.static('img'));
 
+// A user will first get to the login page
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/login.html');
 });
 
+// This is where you enter the chatroom. If the requested username
+// is already in use, you will be redirected to the login page
 app.get('/chat/*', function(req, res){
   var name = req.params[0];
-  console.log(name);
   if(userHandler.checkUsername(name)){
     userHandler.addUser(name);
     res.sendFile(__dirname + '/index.html');
@@ -33,6 +28,7 @@ app.get('/chat/*', function(req, res){
   }  
 });
 
+// This is a check if a username is already in use
 app.get('/user/*', function(req, res){
   var name = req.params[0];
   console.log("Check user: " + name);
@@ -43,12 +39,18 @@ app.get('/user/*', function(req, res){
   }
 });
 
+// This is a list of the connected sockets containing touples:
+// [socketobject, username]
 socketList = [];
 
 io.on('connection', function(socket){
+  // A hello event will be fired on connection. Here, the browser tells NodeJS
+  // which usernames belongs to which socket
   socket.on('hello', function(usrnm){
     socketList.push([socket, usrnm]);
   });
+
+  // On disconnect, the user will be removed from socketList and userList
   socket.on('disconnect', function(){
     for(var i = 0; i < socketList.length; i++){
       if(socket == socketList[i][0]){
@@ -59,11 +61,14 @@ io.on('connection', function(socket){
       }
     }
   });
+
+  // When a client sends a message, it will be broadcasted to all clients
   socket.on('chat message', function(msg){
     io.emit('chat message', msg);
   });
 });
 
+// This is the command to start the server
 http.listen(port, function(){
   console.log('listening on *:' + port);
 });

@@ -1,6 +1,7 @@
 var socket = io();
 var usr = ''; // username
 
+// When entering the chatroom, the own username is transmitted through the socket
 $(document).ready(function(){
     var path = window.location.pathname;
     usr = path.replace('/chat/', '');
@@ -11,6 +12,10 @@ $(document).ready(function(){
     }
 
 });
+
+// A message contains username, time and the message itself.
+// The three informations are split by "\;"
+// This function returns an object, that contains the information separated
 function parseMsg(m){
     var spl = m.split("\;");
     if(spl.length > 3) return false; // When the chat message contains the split character
@@ -27,6 +32,8 @@ function createMsgBubble(name, time, msg){
     return msgBubble;
 }	
 
+// Called then a message is sent. It will create a bubble without waiting
+// for the transmission to the server. 
 $(function () {
     $('form').submit(function(){
         if(usr == '') return false;
@@ -37,6 +44,9 @@ $(function () {
         window.scrollTo(0, document.body.scrollHeight);
         return false;
     });
+
+    // When a chat message is received, this function is called.
+    // It only creates a bubble, if the messages comes from someone else.
     socket.on('chat message', function(msg){
         var m = parseMsg(msg);
         if(m.name != usr){
@@ -46,6 +56,7 @@ $(function () {
     });
 });
 
+// When you're not logged in, the textfield will not be functional
 function notRegistered(){
     console.log("You are a guest");
     $('#btn').hide();
@@ -54,6 +65,7 @@ function notRegistered(){
     $('#m').val('You have to register first!');
 }
 
+// Gets the current time in the format: "10:35"
 function getTime(){
     var d = new Date();
     var hours = d.getHours();
