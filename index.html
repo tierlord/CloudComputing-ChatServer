@@ -1,97 +1,29 @@
 <!doctype html>
 <html>
-  <head>
-    <title>Socket.IO chat</title>
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
-      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages li { padding: 5px 10px; }
-      #messages li:nth-child(odd) { background: #eee; }
-      #messages { margin-bottom: 40px }
-	  
-	  .bubble {
-		border: 1px solid #ccc;
-		margin: 10px;
-		border-radius: 5px;
-		padding: 3px 8px;
-		background: #6fcef3;
-		max-width: 500px;
-		box-shadow: 2px 0px 2px gray;
-	  }
-	  .head {
-		border-bottom: 1px solid #62b1cf;
-		width: 100%;
-		display: flex;
-		margin-bottom: 5px;
-	  }
-	  .name {
-		font-weight: bold;
-		width: 100%;
-	  }
-	  .timestamp {
-		font-size: smaller;
-	  }
-    </style>
-  </head>
-  <body>
+
+<head>
+  <title>Socket.IO chat</title>
+  <!--Import Google Icon Font-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!--Import materialize.css-->
+  <!-- <link type="text/css" rel="stylesheet" href="/css/materialize.css" media="screen,projection" /> -->
+  <!--Let browser know website is optimized for mobile-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link type="text/css" rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div class="container">
     <ul id="messages"></ul>
     <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
+      <input id="m" autocomplete="off" />
+      <button id="btn">Send</button>
     </form>
-    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-    <script>
-			var socket = io();
-			var usr = ""; // username
+  </div>
+  <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+  <script src="/js/chatfunction.js"></script>
+  <!-- <script type="text/javascript" src="/js/materialize.min.js"></script> -->
+</body>
 
-			$(document).ready(function(){
-				var path = window.location.pathname;
-				usr = path.replace('/chat/', '');
-				console.log("Username: " + usr);
-				socket.emit('hello', usr);
-			});
-			function parseMsg(m){
-				var spl = m.split("\;");
-				if(spl.length > 3) return false; // When the chat message contains the split character
-				var msg = {
-					name : spl[0],
-					time : spl[1],
-					text : spl[2]
-				}
-				return msg;
-			}	
-		
-			function createMsgBubble(name, time, msg){
-				var msgBubble = '<div class="bubble"><div class="head"><p class="name">' + name + '</p><p class="timestamp">' + time + '</p></div><p class="message">' + msg + '</p></div>';
-				return msgBubble;
-			}	
-		
-		
-			$(function () {
-				$('form').submit(function(){
-					socket.emit('chat message', usr + '\;' + getTime() + '\;' + $('#m').val());
-					$('#m').val('');
-					return false;
-				});
-				socket.on('chat message', function(msg){
-				var m = parseMsg(msg);
-				$('#messages').append(createMsgBubble(m.name, m.time, m.text));
-				window.scrollTo(0, document.body.scrollHeight);
-				});
-			});
-			
-			function getTime(){
-				var d = new Date();
-				var hours = d.getHours();
-				var minutes = d.getMinutes();
-				if(hours < 10) hours = "0" + String(hours);
-				if(minutes < 10) minutes = "0" + String(minutes);
-				return hours + ":" + minutes;
-			}
-    </script>
-  </body>
 </html>

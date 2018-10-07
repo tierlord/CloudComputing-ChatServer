@@ -1,12 +1,25 @@
-var app = require('express')();
+var express = require('express');
+var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
 
 var userHandler = require('./userHandler');
 
+// serve the css and js files to the browser
+// app.get('/css/*', function(req,res){
+//   http.use(app.sta __dirname , '/css/' , req.params[0]);
+// });
+// app.get('/js/*', function(req,res){
+//   res.sendFile(__dirname + '/js/' + req.params[0]);
+// });
+
+app.use('/js', express.static('js'));
+app.use('/css', express.static('css'));
+app.use('/img', express.static('img'));
+
 app.get('/', function(req, res){
-  res.sendFile(__dirname + '/index.html');
+  res.sendFile(__dirname + '/login.html');
 });
 
 app.get('/chat/*', function(req, res){
@@ -16,8 +29,18 @@ app.get('/chat/*', function(req, res){
     userHandler.addUser(name);
     res.sendFile(__dirname + '/index.html');
   } else {
-    res.send("Sorry, username already taken!");
+    res.sendFile(__dirname + "/login.html");
   }  
+});
+
+app.get('/user/*', function(req, res){
+  var name = req.params[0];
+  console.log("Check user: " + name);
+  if(userHandler.checkUsername(name)){
+    res.send('free');
+  } else {
+    res.send('used');
+  }
 });
 
 socketList = [];

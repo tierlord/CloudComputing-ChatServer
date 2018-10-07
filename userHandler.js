@@ -2,8 +2,13 @@ var userList = [];
 
 var methods = {
     addUser: function(name){
+        if(name == ''){
+            console.log("Username can't be empty!");
+            return false;
+        }
         userList.push(name);
         console.log(name + " added");
+        return true;
     },
 
     removeUser: function(name){
