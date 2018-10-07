@@ -10,7 +10,6 @@ $(document).ready(function(){
     } else {
         notRegistered();
     }
-
 });
 
 // A message contains username, time and the message itself.
@@ -28,7 +27,12 @@ function parseMsg(m){
 }	
 
 function createMsgBubble(name, time, msg){
-    var msgBubble = '<div class="bubble"><div class="head"><p class="name">' + name + '</p><p class="timestamp">' + time + '</p></div><p class="message">' + msg + '</p></div>';
+    if(name == usr){
+        var msgBubble = '<div class="bubbleright"><div class="headright"><p class="name">' + name + '</p><p class="timestamp">' + time + '</p></div><p class="message">' + msg + '</p></div>';
+    } else {
+        var msgBubble = '<div class="bubble"><div class="head"><p class="name">' + name + '</p><p class="timestamp">' + time + '</p></div><p class="message">' + msg + '</p></div>';
+    }
+    
     return msgBubble;
 }	
 
