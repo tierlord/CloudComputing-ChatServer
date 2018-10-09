@@ -36,6 +36,16 @@ function createMsgBubble(name, time, msg){
     return msgBubble;
 }	
 
+function enterNotification(name){
+    var msgBubble = '<div class="lightBubble"><div class="head"><p class="name">' + name + ' entered the chat room' +'</p></div>';
+    return msgBubble;
+}   
+
+function exitNotification(name){
+    var msgBubble = '<div class="lightBubble"><div class="head"><p class="name">' + name + ' left the chat room' +'</p></div>';
+    return msgBubble;
+}
+
 // Called then a message is sent. It will create a bubble without waiting
 // for the transmission to the server. 
 $(function () {
@@ -57,6 +67,14 @@ $(function () {
             $('#messages').append(createMsgBubble(m.name, m.time, m.text));
             window.scrollTo(0, document.body.scrollHeight);
         }    
+    });
+    socket.on('enter chat',function(username){
+        $('#messages').append(enterNotification(username));
+        window.scrollTo(0, document.body.scrollHeight);
+    });
+    socket.on('exit chat', function(username){
+        $('#messages').append(exitNotification(username));
+        window.scrollTo(0, document.body.scrollHeight);
     });
 });
 

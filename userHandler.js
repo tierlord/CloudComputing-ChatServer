@@ -26,6 +26,10 @@ var methods = {
         return userList;
     },
 
+    getLastUser: function(){
+        return userList[userList.length-1];
+    },
+
     checkUsername: function(name){
         for (var i = 0; i < userList.length; i++){
             if(name == userList[i]){

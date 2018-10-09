@@ -50,12 +50,15 @@ io.on('connection', function(socket){
     socketList.push([socket, usrnm]);
   });
 
+  socket.broadcast.emit('enter chat',userHandler.getLastUser());
+
   // On disconnect, the user will be removed from socketList and userList
   socket.on('disconnect', function(){
     for(var i = 0; i < socketList.length; i++){
       if(socket == socketList[i][0]){
         console.log(socketList[i][1] + " disconnected!");
         userHandler.removeUser(socketList[i][1]);
+        io.emit('exit chat', socketList[i][1]);
         socketList.splice(i,1);
         break;
       }
