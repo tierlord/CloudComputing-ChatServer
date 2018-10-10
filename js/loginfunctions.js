@@ -1,3 +1,5 @@
+var loginEnabled = false;
+
 $('#form').submit(function(e){
     e.preventDefault();
     var t = document.getElementById("textfield").value;
@@ -21,15 +23,22 @@ $('#form').submit(function(e){
 
 $('#textfield').on('input', function(){
     var t = document.getElementById("textfield").value;
-    if(t.indexOf('/') != -1 || t.indexOf(' ') != -1){
+    if(t.indexOf(' ') != -1){
         redTextfield(true);
+        disableLogin();
         console.log("Error");
     } else {
         redTextfield(false);
+        enableLogin();
     }
 });
 
 function redTextfield(enabled){
     if(enabled) $('#textfield').css('borderBottom', '1px solid #f00');
     else $('#textfield').css('borderBottom', '1px solid #fff');
+}
+
+function disableLogin(){
+    loginEnabled = false;
+    
 }
