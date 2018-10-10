@@ -18,24 +18,6 @@
 	</div>
 	<script src="/js/socket.io-1.2.0.js"></script>
 	<script src="/js/jquery-3.3.1.min.js"></script>
-	<script>
-		$('#form').submit(function(e){
-			e.preventDefault();
-			console.log("Submit");
-			var t = document.getElementById("textfield").value;
-			
-			// Check if username is free
-			$.get("user/" + t, function(data, status){
-				if(data == 'used'){
-					alert("Sorry, username is already taken.");
-				}
-				if(data == 'free'){
-					// login with username					
-					location.href = "/chat/" + t;					
-				}
-			});			
-			return false;
-		});
-	</script>
+	<script src="/js/loginfunctions.js"></script>
 </body>
 </html>

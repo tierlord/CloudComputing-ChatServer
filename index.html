@@ -14,18 +14,13 @@
   <div class="container">
     <ul id="messages"></ul>
     <form action="">
-      <input id="m" autocomplete="off" />
+      <input id="m" autocomplete="off" autofocus />
       <button id="btn">Send</button>
     </form>
   </div>
   <script src="/js/socket.io-1.2.0.js"></script>
   <script src="/js/jquery-3.3.1.min.js"></script>
   <script src="/js/chatfunction.js"></script>
-  <script>
-    $(document).ready(function(){
-      $('#m').focus();
-    });
-  </script>
 </body>
 
 </html>
