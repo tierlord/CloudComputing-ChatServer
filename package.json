@@ -1,0 +1,25 @@
+{
+  "name": "chatserver",
+  "version": "1.0.0",
+  "description": "This is the source code for a very simple chat example used for\r the [Getting Started](http://socket.io/get-started/chat/) guide\r of the Socket.IO website.",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.16.3",
+    "nodemon": "^1.18.4",
+    "socket.io": "^1.7.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tierlord/CloudComputing-ChatServer.git"
+  },
+  "author": "Joffrey, Alina",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tierlord/CloudComputing-ChatServer/issues"
+  },
+  "homepage": "https://github.com/tierlord/CloudComputing-ChatServer#readme"
+}

@@ -28,21 +28,21 @@ function parseMsg(m){
 
 function createMsgBubble(name, time, msg){
     if(name == usr){
-        var msgBubble = '<div class="bubbleright"><div class="headright"><p class="name">' + name + '</p><p class="timestamp">' + time + '</p></div><p class="message">' + msg + '</p></div>';
+        var msgBubble = '<div class="bubbleright animated"><div class="headright"><p class="name">' + name + '</p><p class="timestamp">' + time + '</p></div><p class="message">' + msg + '</p></div>';
     } else {
-        var msgBubble = '<div class="bubble"><div class="head"><p class="name">' + name + '</p><p class="timestamp">' + time + '</p></div><p class="message">' + msg + '</p></div>';
+        var msgBubble = '<div class="bubble animated"><div class="head"><p class="name">' + name + '</p><p class="timestamp">' + time + '</p></div><p class="message">' + msg + '</p></div>';
     }
     
     return msgBubble;
 }	
 
 function enterNotification(name){
-    var msgBubble = '<div class="lightBubble"><div class="head"><p class="name">' + name + ' entered the chat room' +'</p></div>';
+    var msgBubble = '<div class="lightBubble"><p class="name">' + name + ' has entered the room' +'</p></div>';
     return msgBubble;
 }   
 
 function exitNotification(name){
-    var msgBubble = '<div class="lightBubble"><div class="head"><p class="name">' + name + ' left the chat room' +'</p></div>';
+    var msgBubble = '<div class="lightBubble"><p class="name">' + name + ' has left the room' +'</p></div>';
     return msgBubble;
 }
 

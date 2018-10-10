@@ -10,30 +10,32 @@
 		<div id="pic"><img src="/img/letsChat.png" class="avatar"></div>
 			<p id="quote">Meet new people everyday without limits, make friendships around the world!</p>
 
-			<form onsubmit="login()">
+			<form id="form">
 				<p>Username</p>
 				<input id="textfield" type="text" name="" placeholder="Enter Username">
 				<input type="submit" name="" value="Enter the Chat"><br>
 			</form>
 	</div>
-	<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+	<script src="/js/socket.io-1.2.0.js"></script>
+	<script src="/js/jquery-3.3.1.min.js"></script>
 	<script>
-		function login(){
+		$('#form').submit(function(e){
+			e.preventDefault();
 			console.log("Submit");
 			var t = document.getElementById("textfield").value;
-
+			
 			// Check if username is free
-			$.get("/user/" + t, function(data, status){
+			$.get("user/" + t, function(data, status){
 				if(data == 'used'){
 					alert("Sorry, username is already taken.");
 				}
 				if(data == 'free'){
-					// login with username
-					location.href = "/chat/" + t;
+					// login with username					
+					location.href = "/chat/" + t;					
 				}
 			});			
 			return false;
-		}
+		});
 	</script>
 </body>
 </html>

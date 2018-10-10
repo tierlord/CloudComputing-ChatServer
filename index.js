@@ -11,7 +11,7 @@ app.use('/js', express.static('js'));
 app.use('/css', express.static('css'));
 app.use('/img', express.static('img'));
 
-// A user will first get to the login page
+// A new user will first get to the login page
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/login.html');
 });
@@ -28,7 +28,7 @@ app.get('/chat/*', function(req, res){
   }  
 });
 
-// This is a check if a username is already in use
+// Check if a username is already in use
 app.get('/user/*', function(req, res){
   var name = req.params[0];
   console.log("Check user: " + name);
@@ -39,13 +39,13 @@ app.get('/user/*', function(req, res){
   }
 });
 
-// This is a list of the connected sockets containing touples:
+// A list of the connected sockets containing touples:
 // [socketobject, username]
 socketList = [];
 
 io.on('connection', function(socket){
   // A hello event will be fired on connection. Here, the browser tells NodeJS
-  // which usernames belongs to which socket
+  // which username belongs to which socket
   socket.on('hello', function(usrnm){
     socketList.push([socket, usrnm]);
   });
