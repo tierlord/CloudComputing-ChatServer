@@ -51,6 +51,7 @@ io.on('connection', function(socket){
   });
 
   socket.broadcast.emit('enter chat',userHandler.getLastUser());
+  broadcastList();
 
   // On disconnect, the user will be removed from socketList and userList
   socket.on('disconnect', function(){
@@ -60,6 +61,7 @@ io.on('connection', function(socket){
         userHandler.removeUser(socketList[i][1]);
         io.emit('exit chat', socketList[i][1]);
         socketList.splice(i,1);
+        broadcastList();
         break;
       }
     }
@@ -70,6 +72,12 @@ io.on('connection', function(socket){
     io.emit('chat message', msg);
   });
 });
+
+// Sends a list of usernames to all clients
+function broadcastList(){
+  var userList = userHandler.getUsers();
+  io.emit('user list', userList);
+}
 
 // This is the command to start the server
 http.listen(port, function(){

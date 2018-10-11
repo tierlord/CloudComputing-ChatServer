@@ -1,5 +1,6 @@
 var socket = io();
 var usr = ''; // username
+var userList = []; // list of users
 
 // When entering the chatroom, the own username is transmitted through the socket
 $(document).ready(function(){
@@ -48,35 +49,37 @@ function exitNotification(name){
 
 // Called then a message is sent. It will create a bubble without waiting
 // for the transmission to the server. 
-$(function () {
-    $('form').submit(function(){
-        if(usr == '') return false;
-        var msgtext = $('#m').val();
-        socket.emit('chat message', usr + '\;' + getTime() + '\;' + msgtext);
-        //window.scrollTo(0, document.body.scrollHeight + '70px');
-        $('#messages').append(createMsgBubble(usr, getTime(), msgtext));
-        $('#m').val('');
-        window.scrollTo(0, document.body.scrollHeight);
-        return false;
-    });
+$('form').submit(function(){
+    if(usr == '') return false;
+    var msgtext = $('#m').val();
+    socket.emit('chat message', usr + '\;' + getTime() + '\;' + msgtext);
+    //window.scrollTo(0, document.body.scrollHeight + '70px');
+    $('#messages').append(createMsgBubble(usr, getTime(), msgtext));
+    $('#m').val('');
+    window.scrollTo(0, document.body.scrollHeight);
+    return false;
+});
 
-    // When a chat message is received, this function is called.
-    // It only creates a bubble, if the messages comes from someone else.
-    socket.on('chat message', function(msg){
-        var m = parseMsg(msg);
-        if(m.name != usr){
-            $('#messages').append(createMsgBubble(m.name, m.time, m.text));
-            window.scrollTo(0, document.body.scrollHeight);
-        }    
-    });
-    socket.on('enter chat',function(username){
-        $('#messages').append(enterNotification(username));
+// When a chat message is received, this function is called.
+// It only creates a bubble, if the messages comes from someone else.
+socket.on('chat message', function(msg){
+    var m = parseMsg(msg);
+    if(m.name != usr){
+        $('#messages').append(createMsgBubble(m.name, m.time, m.text));
         window.scrollTo(0, document.body.scrollHeight);
-    });
-    socket.on('exit chat', function(username){
-        $('#messages').append(exitNotification(username));
-        window.scrollTo(0, document.body.scrollHeight);
-    });
+    }    
+});
+socket.on('enter chat',function(username){
+    $('#messages').append(enterNotification(username));
+    window.scrollTo(0, document.body.scrollHeight);
+});
+socket.on('exit chat', function(username){
+    $('#messages').append(exitNotification(username));
+    window.scrollTo(0, document.body.scrollHeight);
+});
+socket.on('user list', function(list){
+    userlist = list;
+    console.log(userlist);
 });
 
 // When you're not logged in, the textfield will not be functional
@@ -96,4 +99,9 @@ function getTime(){
     if(hours < 10) hours = "0" + String(hours);
     if(minutes < 10) minutes = "0" + String(minutes);
     return hours + ":" + minutes;
+}
+
+// is called when choosing a recipient for a private message
+function getUserSuggestions(){
+
 }
