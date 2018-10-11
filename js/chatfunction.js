@@ -105,3 +105,9 @@ function getTime(){
 function getUserSuggestions(){
 
 }
+
+function showList(){
+    for(var person in userList){
+        $('#userListbox').append('<li>'+person+'</li>');
+    }
+}
