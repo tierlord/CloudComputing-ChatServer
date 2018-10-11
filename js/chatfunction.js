@@ -78,8 +78,8 @@ socket.on('exit chat', function(username){
     window.scrollTo(0, document.body.scrollHeight);
 });
 socket.on('user list', function(list){
-    userlist = list;
-    console.log(userlist);
+    userList = list;
+    console.log(userList);
 });
 
 // When you're not logged in, the textfield will not be functional
@@ -107,7 +107,17 @@ function getUserSuggestions(){
 }
 
 function showList(){
-    for(var person in userList){
-        $('#userListbox').append('<li>'+person+'</li>');
+    var box = $("#listBox");
+    if(box.is(":visible")){
+        box.hide();
+    } else {
+        var orderedList = $("#userListBox");
+        orderedList.empty();
+        for(var i = 0; i < userList.length; i++){
+            console.log("PERSON: " + userList[i]);
+            orderedList.append('<li>'+userList[i]+'</li>');
+        }
+        box.show();
     }
+
 }

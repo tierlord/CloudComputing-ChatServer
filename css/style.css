@@ -118,7 +118,7 @@ p {
     animation: slide-up 0.4s ease;
 }
 
-#suggestions {
+#listBox {
     position: absolute;
     bottom: 52px;
     left: 12px;
