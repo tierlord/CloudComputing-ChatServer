@@ -120,9 +120,11 @@ p {
 
 #suggestions {
     position: absolute;
-    bottom:70px;
-    left: 10px;
+    bottom: 52px;
+    left: 12px;
     background: white;
+    box-shadow: 0px 0px 2px grey;
+    min-width: 150px;
 }
 
 @keyframes slide-up {
