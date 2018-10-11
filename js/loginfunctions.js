@@ -39,6 +39,9 @@ function redTextfield(enabled){
 }
 
 function disableLogin(){
-    loginEnabled = false;
-    
+    loginEnabled = false;    
+}
+
+function enableLogin(){
+    loginEnabled = true;
 }

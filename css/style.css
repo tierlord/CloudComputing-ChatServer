@@ -3,6 +3,17 @@ body {
 	background-size: cover;
     background-attachment: fixed
 }
+
+li {
+    list-style-type: none;
+    margin: 5px;
+}
+
+ol {
+    padding: 0px 13px;
+    margin: 0;
+}
+
 .container {
     width: 90%;
     margin: 0 auto;
@@ -58,7 +69,6 @@ form button {
     padding: 0px 8px;
     background: #c4d4ed;
     box-shadow: 2px 0px 2px gray;
-    margin-right: 20%;
     color:darkgrey;
 }
 
@@ -106,6 +116,13 @@ p {
 
 .animated {
     animation: slide-up 0.4s ease;
+}
+
+#suggestions {
+    position: absolute;
+    bottom:70px;
+    left: 10px;
+    background: white;
 }
 
 @keyframes slide-up {
