@@ -53,6 +53,7 @@ $(function () {
         if(usr == '') return false;
         var msgtext = $('#m').val();
         socket.emit('chat message', usr + '\;' + getTime() + '\;' + msgtext);
+        //window.scrollTo(0, document.body.scrollHeight + '70px');
         $('#messages').append(createMsgBubble(usr, getTime(), msgtext));
         $('#m').val('');
         window.scrollTo(0, document.body.scrollHeight);
