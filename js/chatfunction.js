@@ -11,7 +11,10 @@ $(document).ready(function(){
     } else {
         notRegistered();
     }
-    $("#listBox").hide();
+    $("#listBox").focusout(function (){
+        $("#listBox").hide();
+    });
+    $('#m').focus();
     $("#userListBox").append('<li class="listItem">'+usr+'</li>');
 });
 
@@ -155,11 +158,6 @@ function getTime(){
     if(hours < 10) hours = "0" + String(hours);
     if(minutes < 10) minutes = "0" + String(minutes);
     return hours + ":" + minutes;
-}
-
-// is called when choosing a recipient for a private message
-function getUserSuggestions(){
-
 }
 
 function updateList(){

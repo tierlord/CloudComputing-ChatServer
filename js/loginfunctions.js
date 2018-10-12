@@ -3,8 +3,8 @@ var loginEnabled = false;
 $('#form').submit(function(e){
     e.preventDefault();
     var t = document.getElementById("textfield").value;
-    console.log("Submit "+ t);
-    if(t == ''){
+    checkValidation(t);
+    if(!loginEnabled){
         redTextfield(true);
         return false;
     }
@@ -23,15 +23,22 @@ $('#form').submit(function(e){
 
 $('#textfield').on('input', function(){
     var t = document.getElementById("textfield").value;
-    if(t.indexOf(' ') != -1){
+    console.log(t + ": " + checkValidation(t));
+    if(!checkValidation(t) || t.length > 30){
         redTextfield(true);
         disableLogin();
-        console.log("Error");
     } else {
         redTextfield(false);
         enableLogin();
     }
 });
+
+function checkValidation(text){
+    console.log("ok: " + text);
+    var valid = /^[0-9a-zA-Z\_]+$/;
+    if(text.match(valid)) return true;
+    else return false;
+}
 
 function redTextfield(enabled){
     if(enabled) $('#textfield').css('borderBottom', '1px solid #f00');
