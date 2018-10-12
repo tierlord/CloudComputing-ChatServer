@@ -71,6 +71,14 @@ io.on('connection', function(socket){
   socket.on('chat message', function(msg){
     io.emit('chat message', msg);
   });
+
+  socket.on('private message', function(msg){
+    for(var i = 0; i < socketList.length; i++){
+      if(msg.recipient == socketList[i][1]){
+        socketList[i][0].emit('private message', msg);
+      }
+    }
+  });
 });
 
 // Sends a list of usernames to all clients

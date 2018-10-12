@@ -11,6 +11,7 @@ $(document).ready(function(){
     } else {
         notRegistered();
     }
+    $("#listBox").hide();
 });
 
 // A message contains username, time and the message itself.
@@ -29,32 +30,76 @@ function parseMsg(m){
 
 function createMsgBubble(name, time, msg){
     if(name == usr){
-        var msgBubble = '<div class="bubbleright animated"><div class="headright"><p class="name">' + name + '</p><p class="timestamp">' + time + '</p></div><p class="message">' + msg + '</p></div>';
+        var msgBubble = '<div class="bubbleright animated"><div class="headright">';
+        msgBubble +=    '<p class="name">' + name + '</p>';
+        msgBubble +=    '<p class="timestamp">' + time + '</p></div>';
+        msgBubble +=    '<p class="message">' + msg + '</p></div>';
     } else {
-        var msgBubble = '<div class="bubble animated"><div class="head"><p class="name">' + name + '</p><p class="timestamp">' + time + '</p></div><p class="message">' + msg + '</p></div>';
-    }
-    
+        var msgBubble = '<div class="bubble animated"><div class="head">';
+        msgBubble +=    '<p class="name">' + name + '</p>';
+        msgBubble +=    '<p class="timestamp">' + time + '</p></div>';
+        msgBubble +=    '<p class="message">' + msg + '</p></div>';
+    }    
     return msgBubble;
-}	
+}
+
+function createMsgBubblePrivate(name, time, msg, recipient){
+    if(name == usr){
+        var msgBubble = '<div class="bubbleright animated"><div class="headright">';
+        msgBubble +=    '<p class="name">' + name + ' > ' + recipient + '</p>';
+        msgBubble +=    '<p class="timestamp">' + time + '</p></div>';
+        msgBubble +=    '<p class="message">' + msg + '</p></div>';
+    } else {
+        var msgBubble = '<div class="bubble animated"><div class="head">';
+        msgBubble +=    '<p class="name">' + recipient + ' > ' + name + '</p>';
+        msgBubble +=    '<p class="timestamp">' + time + '</p></div>';
+        msgBubble +=    '<p class="message">' + msg + '</p></div>';
+    }    
+    return msgBubble;
+}
 
 function enterNotification(name){
-    var msgBubble = '<div class="lightBubble"><p class="name">' + name + ' has entered the room' +'</p></div>';
+    var msgBubble = '<div class="lightBubble"><p class="name">' + name + ' has joined the chat' +'</p></div>';
     return msgBubble;
 }   
 
 function exitNotification(name){
-    var msgBubble = '<div class="lightBubble"><p class="name">' + name + ' has left the room' +'</p></div>';
+    var msgBubble = '<div class="lightBubble"><p class="name">' + name + ' has left the chat' +'</p></div>';
     return msgBubble;
 }
 
 // Called then a message is sent. It will create a bubble without waiting
 // for the transmission to the server. 
 $('form').submit(function(){
-    if(usr == '') return false;
+    if(usr == '') return false; // Don't do anything if you're a guest
+    
+    // Create a message object
+    var msg = {
+        recipient: '',
+        sender: usr,
+        time: getTime(),
+        text: ''
+    }
+    
     var msgtext = $('#m').val();
-    socket.emit('chat message', usr + '\;' + getTime() + '\;' + msgtext);
-    //window.scrollTo(0, document.body.scrollHeight + '70px');
-    $('#messages').append(createMsgBubble(usr, getTime(), msgtext));
+
+    // If private message
+    if(msgtext.charAt(0) == '@'){
+        var spaceIndex = msgtext.indexOf(' ');
+        if(spaceIndex != -1){
+            console.log("Nice");
+            msg.recipient = msgtext.substring(1, spaceIndex);
+            msg.text = msgtext.substring(spaceIndex+1, msgtext.length);
+            socket.emit('private message', msg);
+            $('#messages').append(createMsgBubblePrivate(usr, getTime(), msg.text, msg.recipient));
+        }
+    } else {
+        // If public message
+        msg.recipient = 'all';
+        msg.text = msgtext;
+        socket.emit('chat message', msg);
+        $('#messages').append(createMsgBubble(usr, getTime(), msgtext));
+    }    
     $('#m').val('');
     window.scrollTo(0, document.body.scrollHeight);
     return false;
@@ -63,20 +108,28 @@ $('form').submit(function(){
 // When a chat message is received, this function is called.
 // It only creates a bubble, if the messages comes from someone else.
 socket.on('chat message', function(msg){
-    var m = parseMsg(msg);
-    if(m.name != usr){
-        $('#messages').append(createMsgBubble(m.name, m.time, m.text));
+    if(msg.sender != usr){
+        $('#messages').append(createMsgBubble(msg.sender, msg.time, msg.text));
         window.scrollTo(0, document.body.scrollHeight);
     }    
 });
+
+socket.on('private message', function(msg){
+    if(msg.sender != usr){
+        $('#messages').append(createMsgBubblePrivate(msg.sender, msg.time, msg.text, msg.recipient));
+    }
+});
+
 socket.on('enter chat',function(username){
     $('#messages').append(enterNotification(username));
     window.scrollTo(0, document.body.scrollHeight);
 });
+
 socket.on('exit chat', function(username){
     $('#messages').append(exitNotification(username));
     window.scrollTo(0, document.body.scrollHeight);
 });
+
 socket.on('user list', function(list){
     userList = list;
     console.log(userList);
@@ -114,10 +167,14 @@ function showList(){
         var orderedList = $("#userListBox");
         orderedList.empty();
         for(var i = 0; i < userList.length; i++){
-            console.log("PERSON: " + userList[i]);
-            orderedList.append('<li>'+userList[i]+'</li>');
+            var usnm = userList[i];
+            orderedList.append('<li class="listItem" onclick="addPrivate(\''+usnm+'\')">'+usnm+'</li>');
         }
         box.show();
     }
+}
 
+function addPrivate(name){
+    $('#m').val("@" + name + " ");
+    $('#listBox').hide();
 }
