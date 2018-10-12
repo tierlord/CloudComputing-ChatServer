@@ -8,6 +8,14 @@ var methods = {
         }
         userList.push(name);
         console.log(name + " added");
+        userList.sort(function(a, b){
+            var nameA=a.toLowerCase(), nameB=b.toLowerCase();
+            if (nameA < nameB) //sort string ascending
+             return -1;
+            if (nameA > nameB)
+             return 1;
+            return 0; //default return value (no sorting)
+           });
         return true;
     },
 

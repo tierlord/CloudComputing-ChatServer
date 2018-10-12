@@ -12,6 +12,7 @@ $(document).ready(function(){
         notRegistered();
     }
     $("#listBox").hide();
+    $("#userListBox").append('<li class="listItem">'+usr+'</li>');
 });
 
 // A message contains username, time and the message itself.
@@ -87,14 +88,15 @@ $('form').submit(function(){
     if(msgtext.charAt(0) == '@'){
         var spaceIndex = msgtext.indexOf(' ');
         if(spaceIndex != -1){
-            console.log("Nice");
             msg.recipient = msgtext.substring(1, spaceIndex);
             msg.text = msgtext.substring(spaceIndex+1, msgtext.length);
+            if(msg.text == '') return false;
             socket.emit('private message', msg);
             $('#messages').append(createMsgBubblePrivate(usr, getTime(), msg.text, msg.recipient));
-        }
-    } else {
+        } else return false; // When there is no message
+    
         // If public message
+    } else {        
         msg.recipient = 'all';
         msg.text = msgtext;
         socket.emit('chat message', msg);
@@ -132,6 +134,7 @@ socket.on('exit chat', function(username){
 
 socket.on('user list', function(list){
     userList = list;
+    updateList();
     console.log(userList);
 });
 
@@ -159,22 +162,28 @@ function getUserSuggestions(){
 
 }
 
+function updateList(){
+    console.log("Update Userlist, length: " + userList.length);
+    var list = $("#userListBox");
+    list.empty();
+    for(var i = 0; i < userList.length; i++){
+        var usnm = userList[i];
+        list.append('<li class="listItem" onclick="addPrivate(\''+usnm+'\')">'+usnm+'</li>');
+    }
+}
+
 function showList(){
     var box = $("#listBox");
     if(box.is(":visible")){
         box.hide();
     } else {
-        var orderedList = $("#userListBox");
-        orderedList.empty();
-        for(var i = 0; i < userList.length; i++){
-            var usnm = userList[i];
-            orderedList.append('<li class="listItem" onclick="addPrivate(\''+usnm+'\')">'+usnm+'</li>');
-        }
         box.show();
     }
 }
 
 function addPrivate(name){
+    if(name == usr) return false;
     $('#m').val("@" + name + " ");
     $('#listBox').hide();
+    $('#m').focus();
 }
