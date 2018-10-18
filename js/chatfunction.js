@@ -77,6 +77,9 @@ function exitNotification(name){
 $('form').submit(function(){
     if(usr == '') return false; // Don't do anything if you're a guest
     
+    var msgtext = $('#m').val();
+    if(msgtext == '') return false;
+
     // Create a message object
     var msg = {
         recipient: '',
@@ -84,8 +87,6 @@ $('form').submit(function(){
         time: getTime(),
         text: ''
     }
-    
-    var msgtext = $('#m').val();
 
     // If private message
     if(msgtext.charAt(0) == '@'){
