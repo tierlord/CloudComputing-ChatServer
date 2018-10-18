@@ -16,6 +16,17 @@ $(document).ready(function(){
     });
     $('#m').focus();
     $("#userListBox").append('<li class="listItem">'+usr+'</li>');
+
+    $('body').on('click',function(e){
+
+        if(e.target.id=='navbar-toggleId')
+            return;
+        //put constraints on descendents
+        if($(e.target).closest('navbar-toggleId').length)
+            return;
+
+        $('#listBox').fadeOut();
+    });
 });
 
 // A message contains username, time and the message itself.

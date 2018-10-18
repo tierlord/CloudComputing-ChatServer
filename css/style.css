@@ -119,7 +119,7 @@ p {
 }
 
 #listBox {
-    position: absolute;
+    position: fixed;
     bottom: 52px;
     left: 12px;
     background: white;
