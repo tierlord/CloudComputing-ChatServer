@@ -25,6 +25,9 @@ $(document).ready(function(){
         if($(e.target).closest('navbar-toggleId').length)
             return;
 
+        if($(e.target).attr('class')==='icon-bar')
+            return;
+
         $('#listBox').fadeOut();
     });
 });
