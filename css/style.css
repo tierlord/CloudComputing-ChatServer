@@ -60,6 +60,7 @@ form button {
     background: #6fcef2;
     box-shadow: 2px 0px 2px gray;
     margin-right: 20%;
+    overflow-wrap: break-word;
 }
 
 .lightBubble {
@@ -81,6 +82,7 @@ form button {
     background: #5a46b4;
     box-shadow: 2px 0px 2px gray;
     margin-left: 20%;
+    overflow-wrap: break-word;
 }
 
 .head {
@@ -178,4 +180,13 @@ p {
 
 .navbar-toggle .icon-bar+.icon-bar {
    margin-top: 4px;
+}
+
+i {
+    border: solid rgb(255, 255, 255);
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
 }

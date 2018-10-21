@@ -11,24 +11,20 @@ $(document).ready(function(){
     } else {
         notRegistered();
     }
-    $("#listBox").focusout(function (){
-        $("#listBox").hide();
-    });
+
     $('#m').focus();
-    $("#userListBox").append('<li class="listItem">'+usr+'</li>');
+    $("#userListBox").append('<li class="listItem">'+ usr +'</li>');
 
     $('body').on('click',function(e){
-
-        if(e.target.id=='navbar-toggleId')
-            return;
-        //put constraints on descendents
-        if($(e.target).closest('navbar-toggleId').length)
-            return;
-
-        if($(e.target).attr('class')==='icon-bar')
-            return;
-
-        $('#listBox').fadeOut();
+        var tar = $(event.target).attr('class');
+        if($("#listBox").is(":visible")){
+            if(tar != 'navbar-toggle' && tar != 'icon-bar'){
+                $('#listBox').fadeOut();
+                console.log("Click event: " + tar);
+            }
+        
+        
+        }
     });
 });
 
@@ -49,30 +45,24 @@ function parseMsg(m){
 function createMsgBubble(name, time, msg){
     if(name == usr){
         var msgBubble = '<div class="bubbleright animated"><div class="headright">';
-        msgBubble +=    '<p class="name">' + name + '</p>';
-        msgBubble +=    '<p class="timestamp">' + time + '</p></div>';
-        msgBubble +=    '<p class="message">' + msg + '</p></div>';
     } else {
         var msgBubble = '<div class="bubble animated"><div class="head">';
-        msgBubble +=    '<p class="name">' + name + '</p>';
-        msgBubble +=    '<p class="timestamp">' + time + '</p></div>';
-        msgBubble +=    '<p class="message">' + msg + '</p></div>';
     }    
+    msgBubble +=    '<p class="name">' + name + '</p>';
+    msgBubble +=    '<p class="timestamp">' + time + '</p></div>';
+    msgBubble +=    '<p class="message">' + msg + '</p></div>';
     return msgBubble;
 }
 
 function createMsgBubblePrivate(name, time, msg, recipient){
-    if(name == usr){
+    if(name == usr) {
         var msgBubble = '<div class="bubbleright animated"><div class="headright">';
-        msgBubble +=    '<p class="name">' + name + ' > ' + recipient + '</p>';
-        msgBubble +=    '<p class="timestamp">' + time + '</p></div>';
-        msgBubble +=    '<p class="message">' + msg + '</p></div>';
     } else {
         var msgBubble = '<div class="bubble animated"><div class="head">';
-        msgBubble +=    '<p class="name">' + recipient + ' > ' + name + '</p>';
-        msgBubble +=    '<p class="timestamp">' + time + '</p></div>';
-        msgBubble +=    '<p class="message">' + msg + '</p></div>';
-    }    
+    }
+    msgBubble +=    '<p class="name">' + '<i></i> Private: ' + recipient + '</p>';
+    msgBubble +=    '<p class="timestamp">' + time + '</p></div>';
+    msgBubble +=    '<p class="message">' + msg + '</p></div>';
     return msgBubble;
 }
 
@@ -186,11 +176,12 @@ function updateList(){
 }
 
 function showList(){
+    console.log("showlist");
     var box = $("#listBox");
     if(box.is(":visible")){
-        box.hide();
+        box.fadeOut();
     } else {
-        box.show();
+        box.fadeIn();
     }
 }
 
