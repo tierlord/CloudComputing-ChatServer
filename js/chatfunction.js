@@ -40,15 +40,16 @@ function parseMsg(m){
     return msg;
 }	
 
-function createMsgBubble(name, time, msg){
+function createMsgBubble(name, time, msg, file){
     if(name == usr){
         var msgBubble = '<div class="bubbleright animated"><div class="headright">';
     } else {
         var msgBubble = '<div class="bubble animated"><div class="head">';
-    }    
+    }
     msgBubble +=    '<p class="name">' + name + '</p>';
     msgBubble +=    '<p class="timestamp">' + time + '</p></div>';
     msgBubble +=    '<p class="message">' + msg + '</p></div>';
+    //msgBubble +=    '<img src="' + msg.file + '"></img>';
     return msgBubble;
 }
 
@@ -87,7 +88,8 @@ $('form').submit(function(){
         recipient: '',
         sender: usr,
         time: getTime(),
-        text: ''
+        text: '',
+        file: false
     }
 
     // If private message
@@ -105,6 +107,7 @@ $('form').submit(function(){
     } else {        
         msg.recipient = 'all';
         msg.text = msgtext;
+        //msg.file = "data:image/png;base64,"+ img.toString("base64");
         socket.emit('chat message', msg);
         $('#messages').append(createMsgBubble(usr, getTime(), msgtext));
     }    
@@ -118,7 +121,7 @@ $('form').submit(function(){
 // It only creates a bubble, if the messages comes from someone else.
 socket.on('chat message', function(msg){
     if(msg.sender != usr){
-        $('#messages').append(createMsgBubble(msg.sender, msg.time, msg.text));
+        $('#messages').append(createMsgBubble(msg.sender, msg.time, msg.text, msg.file));
         window.scrollTo(0, document.body.scrollHeight);
     }    
 });
