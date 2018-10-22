@@ -228,3 +228,17 @@ i {
     transform: rotate(-45deg);
     -webkit-transform: rotate(-45deg);
 }
+
+#drop_zone{
+
+    height: 90%;
+    cursor: default;
+    border: 2px dashed #555;
+    /*border-radius: 7px;
+    ;*/
+}
+ 
+ /*Get rid of "No file chosen" text*/
+input[type='file'] {
+  color: transparent;
+}
