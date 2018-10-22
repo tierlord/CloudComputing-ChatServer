@@ -233,7 +233,7 @@ i {
 
     height: 90%;
     cursor: default;
-    border: 2px dashed #555;
+    /*border: 2px dashed #555;*/
     /*border-radius: 7px;
     ;*/
 }
