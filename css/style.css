@@ -4,6 +4,21 @@ body {
     background-attachment: fixed
 }
 
+#btn {
+    background-image: url(../img/sendicon.png);
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+#btn:hover {
+    background-color: #a811a8;
+}
+
 li {
     list-style-type: none;
     margin: 5px;
@@ -32,11 +47,29 @@ form {
     border: 1px solid #ccc;
 }
 
-form input {
-    border: 0;
-    padding: 10px;
+#input-container {
     width: 100%;
+    display: flex;
     margin-right: 1px;
+    padding: 2px;
+    background-color: white;
+    border-radius: 20px;
+    border: 1px solid gray;
+}
+
+input:focus {
+    outline: none !important;
+}
+
+form input {
+    border: none;
+    width: 100%;
+    padding: 8px;
+    background: none;
+}
+
+form input:focus ~ #input-container {
+    border: 1px solid #6fcef2;
 }
 
 form button {
