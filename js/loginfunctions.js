@@ -4,9 +4,15 @@ $(document).ready(function(){
     var url = location.pathname;
     console.log(url);
     if(url.startsWith("/chat/")){
-        disableLogin();
-        setTimeout(login, 1000);
-        $('#textfield').val(url.substring(6));
+        disableLogin();        
+        var name = url.substring(6);
+        if(checkValidation(name) || name == ''){
+            $('#textfield').val(name);
+            setTimeout(login, 1000);
+        } else {
+            alert("Your username must not contain special characters!")
+            location.href = '/';
+        }
     }
 });
 

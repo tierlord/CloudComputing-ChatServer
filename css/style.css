@@ -24,6 +24,35 @@ body {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff',GradientType=0 );
 }
 
+#file {
+    width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+#paperclip {
+    height: 38px;
+    width: 42px;
+    margin-right: 2px;
+    background: url('../img/paperclip.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 26px;
+}
+
+#paperclip:hover {
+    background-size: 30px;
+    transition: background-size 0.5s;
+    -webkit-transition: background-size 0.5s;
+}
+
+#paperclip:active {
+    transform: rotate(15deg);
+}
+
 #btn {
     background-image: url(../img/sendicon.png);
     background-size: 20px;
@@ -49,7 +78,7 @@ ol {
     margin: 0;
 }
 
-.container {
+#container {
     width: 90%;
     margin: 0 auto;
     max-width: 800px;
@@ -102,6 +131,7 @@ form button {
     list-style-type: none;
     margin: 0;
     padding: 60px 0;
+    padding-top: calc(100vh - 145px);
 }
 
 .bubble {
@@ -198,18 +228,6 @@ p {
 
 }
 
-
-@keyframes slide-up {
-    0% {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 .navbar-toggle {
    position: relative;
    float: right;
@@ -244,15 +262,30 @@ i {
 }
 
 #drop_zone{
-
-    height: 90%;
-    cursor: default;
-    /*border: 2px dashed #555;*/
-    /*border-radius: 7px;
-    ;*/
+    position: absolute;
+    top: 50px;
+    bottom: 62px;
+    left: 0;
+    right: 0;
 }
  
  /*Get rid of "No file chosen" text*/
 input[type='file'] {
   color: transparent;
+}
+
+@keyframes slide-up {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+	from { transform: rotate(0deg); }
+	to { transform: rotate(360deg); }
 }

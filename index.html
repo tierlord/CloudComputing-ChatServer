@@ -11,18 +11,20 @@
 </head>
 
 <body>
-  <input type="file" id="files" name="files[]" multiple>
   <output id="outputList"></output>
   <div id="drop_zone"></div>
-  <div class="container">
-    <div class="header"></div>
+  <div id="container">
+    <div class="header">
+      <button class="navbar-toggle" id="navbar-toggleId" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse" onclick="showList()">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+    </div>
     <ul id="messages"></ul>
     <form action="">
-      <button class="navbar-toggle" id="navbar-toggleId" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse" onclick="showList()">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
+      <input type="file" id="file" name="files[]">
+      <label id="paperclip" for="file"></label>
       <div id="input-container">
         <input id="m" autocomplete="off" autofocus />
         <button id="btn"></button>

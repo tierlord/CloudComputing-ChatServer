@@ -21,7 +21,8 @@ app.get('/', function(req, res){
 // is already in use, you will be redirected to the login page
 app.get('/chat/*', function(req, res){
   var name = req.params[0];
-  if(userHandler.checkUsername(name)){
+  var valid = /^[0-9a-zA-Z\_]+$/; // Valid character check
+  if(userHandler.checkUsername(name) && name.match(valid)){
     userHandler.addUser(name);
     res.sendFile(__dirname + '/index.html');
   } else {

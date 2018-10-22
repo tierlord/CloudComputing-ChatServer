@@ -20,7 +20,6 @@ $(document).ready(function(){
         if($("#listBox").is(":visible")){
             if(tar != 'navbar-toggle' && tar != 'icon-bar'){
                 $('#listBox').fadeOut();
-                console.log("Click event: " + tar);
             }
         }
     });
@@ -219,10 +218,19 @@ function handleDragOver(evt) {
     evt.stopPropagation();
     evt.preventDefault();
     evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
-    document.getElementById('drop_zone').style.border='2px dashed #555';
+    var dz = $('#drop_zone');
+    dz.css('border', '2px dashed #555');
+    dz.css('background','#ffffffab');
+}
+
+function handleDragEnd(evt){
+    var dz = $('#drop_zone');
+    dz.css('border','none');
+    dz.css('background','none');
 }
 
 // Setup the dnd listeners.
 var dropZone = document.getElementById('drop_zone');
 dropZone.addEventListener('dragover', handleDragOver, false);
+dropZone.addEventListener('dragleave', handleDragEnd, false);
 dropZone.addEventListener('drop', handleFileSelect, false);
