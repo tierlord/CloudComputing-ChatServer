@@ -11,9 +11,16 @@ $(document).ready(function(){
     } else {
         notRegistered();
     }
+    var input = $('#m');
 
-    $('#m').focus();
     $("#userListBox").append('<li class="listItem">'+ usr +'</li>');
+
+    input.keyup(function(){
+        if(input.val() == '\\list'){
+            showList();
+            input.val('');
+        }
+    });
 
     $('body').on('click',function(e){
         var tar = $(event.target).attr('class');
