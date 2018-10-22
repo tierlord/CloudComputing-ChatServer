@@ -112,6 +112,7 @@ $('form').submit(function(){
     }    
     $('#m').val('');
     window.scrollTo(0, document.body.scrollHeight);
+    $('#m').focus();
     return false;
 });
 

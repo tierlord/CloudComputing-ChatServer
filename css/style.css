@@ -1,7 +1,12 @@
+html {
+    height:100%;
+}
+
 body {
     background: url(/img/cream.jpg);
 	background-size: cover;
-    background-attachment: fixed
+    background-attachment: fixed;
+    height: calc(100% - 70px);
 }
 
 #btn {
@@ -88,10 +93,10 @@ form button {
 .bubble {
     border: 1px solid #ccc;
     margin: 10px;
-    border-radius: 5px;
+    border-radius: 10px;
     padding: 0px 8px;
     background: #6fcef2;
-    box-shadow: 2px 0px 2px gray;
+    box-shadow: 2px 1px 8px gray;
     margin-right: 20%;
     overflow-wrap: break-word;
 }
@@ -99,10 +104,10 @@ form button {
 .lightBubble {
     border: 1px solid #ccc;
     margin: 10px;
-    border-radius: 5px;
+    border-radius: 10px;
     padding: 0px 8px;
     background: #c4d4ed;
-    box-shadow: 2px 0px 2px gray;
+    box-shadow: 2px 1px 8px gray;
     color:darkgrey;
 }
 
@@ -110,7 +115,7 @@ form button {
     color: white;
     border: 1px solid #ccc;
     margin: 10px;
-    border-radius: 5px;
+    border-radius: 10px;
     padding: 0px 8px;
     background: #5a46b4;
     box-shadow: 2px 0px 2px gray;
