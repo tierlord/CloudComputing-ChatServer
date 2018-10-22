@@ -1,23 +1,42 @@
 var loginEnabled = false;
 
+$(document).ready(function(){
+    var url = location.pathname;
+    console.log(url);
+    if(url.startsWith("/chat/")){
+        disableLogin();
+        setTimeout(login, 1000);
+        $('#textfield').val(url.substring(6));
+    }
+});
+
+function login(){
+    var t = $('#textfield').val();
+    // Check if username is free
+    $.get("/user/" + t, function(data, status){
+        console.log(data);
+        if(data == 'used'){
+            alert("Sorry, username is already taken.");
+            location.pathname = '';
+        }
+        if(data == 'free'){
+            // login with username
+            console.log("Logging in as "+ t);
+            location.pathname = '';
+            location.href = "/chat/" + t;					
+        }	
+    });
+}
+
 $('#form').submit(function(e){
     e.preventDefault();
-    var t = document.getElementById("textfield").value;
+    var t = $('#textfield').val();
     checkValidation(t);
     if(!loginEnabled){
         redTextfield(true);
         return false;
     }
-    // Check if username is free
-    $.get("user/" + t, function(data, status){
-        if(data == 'used'){
-            alert("Sorry, username is already taken.");
-        }
-        if(data == 'free'){
-            // login with username					
-            location.href = "/chat/" + t;					
-        }
-    });			
+    login();
     return false;
 });
 
@@ -46,7 +65,8 @@ function redTextfield(enabled){
 }
 
 function disableLogin(){
-    loginEnabled = false;    
+    loginEnabled = false;
+
 }
 
 function enableLogin(){
