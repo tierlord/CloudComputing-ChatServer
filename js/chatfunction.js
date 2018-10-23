@@ -229,6 +229,7 @@ function handleFileSelect(evt) {
         attachedFile = dataURL;
         var thumb = $('#thumbnail');
         thumb.css('background-image', 'url(' + attachedFile + ')');
+        $('#close').show();
         thumb.show();
     };
     reader.readAsDataURL(files[0]);
@@ -256,3 +257,9 @@ dropZone.addEventListener('dragover', handleDragOver, false);
 dropZone.addEventListener('dragleave', handleDragEnd, false);
 dropZone.addEventListener('drop', handleFileSelect, false);
 $('#file').on('change', handleFileSelect);
+
+function deleteAtt(){
+    attachedFile=null;
+    $('#thumbnail').hide();
+    $('#close').hide();
+}
