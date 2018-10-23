@@ -1,7 +1,7 @@
 var socket = io();
 var usr = ''; // username
 var userList = []; // list of users
-var attachedFile;
+var attachedFile = null;
 
 // When entering the chatroom, the own username is transmitted through the socket
 $(document).ready(function(){
@@ -56,7 +56,8 @@ function createMsgBubble(name, time, msg, file){
     msgBubble +=    '<p class="name">' + name + '</p>';
     msgBubble +=    '<p class="timestamp">' + time + '</p></div>';
     msgBubble +=    '<p class="message">' + msg + '</p>';
-    msgBubble +=    '<img class="msgimg" src="' + file + '"></img></div>';
+    if(file != null) msgBubble += '<img class="msgimg" src="' + file + '"></img>';
+    msgBubble +=    '</div>'
     return msgBubble;
 }
 
@@ -96,12 +97,14 @@ $('form').submit(function(){
         sender: usr,
         time: getTime(),
         text: '',
-        file: false
+        file: null
     }
  
-    if(typeof attachedFile !== 'undefined'){
+    if(attachedFile != null){
         msg.file = attachedFile;
-        attachedFile;
+        attachedFile = null;
+        $('#thumbnail').hide();
+        $('#close').hide();
     }
 
     // If private message
@@ -212,6 +215,12 @@ function addPrivate(name){
 function handleFileSelect(evt) {
     evt.stopPropagation();
     evt.preventDefault();    
+
+    // Hide the dropzone
+    var dz = $('#drop_zone');
+    dz.css('border','none');
+    dz.css('background','none');
+
     var files;
     if(evt.type == 'drop'){
         files = evt.dataTransfer.files; // FileList object.
@@ -219,18 +228,13 @@ function handleFileSelect(evt) {
         files = document.getElementById('file').files;
     }
 
-    console.log(files[0].name)
-    var dz = $('#drop_zone');
-    dz.css('border','none');
-    dz.css('background','none');
     var reader = new FileReader();
     reader.onload = function(){
         var dataURL = reader.result;
         attachedFile = dataURL;
         var thumb = $('#thumbnail');
         thumb.css('background-image', 'url(' + attachedFile + ')');
-        $('#close').show();
-        thumb.show();
+        thumb.fadeIn("slow", function(){$('#close').show();});        
     };
     reader.readAsDataURL(files[0]);
 
@@ -260,6 +264,6 @@ $('#file').on('change', handleFileSelect);
 
 function deleteAtt(){
     attachedFile=null;
-    $('#thumbnail').hide();
+    $('#thumbnail').fadeOut();
     $('#close').hide();
 }
