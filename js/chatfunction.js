@@ -263,3 +263,12 @@ function deleteAtt(){
     $('#thumbnail').hide();
     $('#close').hide();
 }
+
+function mouseDown(){
+    $('#drop_zone').hide();
+}
+
+function mouseUp(){
+    $(this).attr('download','element');
+     $('#drop_zone').show();
+}
