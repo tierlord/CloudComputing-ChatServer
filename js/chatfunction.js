@@ -1,6 +1,7 @@
 var socket = io();
 var usr = ''; // username
 var userList = []; // list of users
+var attachedFile;
 
 // When entering the chatroom, the own username is transmitted through the socket
 $(document).ready(function(){
@@ -54,8 +55,8 @@ function createMsgBubble(name, time, msg, file){
     }
     msgBubble +=    '<p class="name">' + name + '</p>';
     msgBubble +=    '<p class="timestamp">' + time + '</p></div>';
-    msgBubble +=    '<p class="message">' + msg + '</p></div>';
-    //msgBubble +=    '<img src="' + msg.file + '"></img>';
+    msgBubble +=    '<p class="message">' + msg + '</p>';
+    msgBubble +=    '<img class="msgimg" src="' + file + '"></img></div>';
     return msgBubble;
 }
 
@@ -97,6 +98,11 @@ $('form').submit(function(){
         text: '',
         file: false
     }
+ 
+    if(typeof attachedFile !== 'undefined'){
+        msg.file = attachedFile;
+        attachedFile;
+    }
 
     // If private message
     if(msgtext.charAt(0) == '@'){
@@ -115,7 +121,7 @@ $('form').submit(function(){
         msg.text = msgtext;
         //msg.file = "data:image/png;base64,"+ img.toString("base64");
         socket.emit('chat message', msg);
-        $('#messages').append(createMsgBubble(usr, getTime(), msgtext));
+        $('#messages').append(createMsgBubble(usr, getTime(), msgtext, msg.file));
     }    
     $('#m').val('');
     window.scrollTo(0, document.body.scrollHeight);
@@ -205,19 +211,27 @@ function addPrivate(name){
 
 function handleFileSelect(evt) {
     evt.stopPropagation();
-    evt.preventDefault();
-
-    var files = evt.dataTransfer.files; // FileList object.
-
-    // files is a FileList of File objects. List some properties.
-    var output = [];
-    for (var i = 0, f; f = files[i]; i++) {
-      output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
-                  f.size, ' bytes, last modified: ',
-                  f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
-                  '</li>');
+    evt.preventDefault();    
+    var files;
+    if(evt.type == 'drop'){
+        files = evt.dataTransfer.files; // FileList object.
+    } else {
+        files = document.getElementById('file').files;
     }
-    document.getElementById('outputList').innerHTML = '<ul>' + output.join('') + '</ul>';
+
+    console.log(files[0].name)
+    var dz = $('#drop_zone');
+    dz.css('border','none');
+    dz.css('background','none');
+    var reader = new FileReader();
+    reader.onload = function(){
+        var dataURL = reader.result;
+        attachedFile = dataURL;
+        var thumb = $('#thumbnail');
+        thumb.css('background-image', 'url(' + attachedFile + ')');
+        thumb.show();
+    };
+    reader.readAsDataURL(files[0]);
 
 }
 
@@ -241,3 +255,4 @@ var dropZone = document.getElementById('drop_zone');
 dropZone.addEventListener('dragover', handleDragOver, false);
 dropZone.addEventListener('dragleave', handleDragEnd, false);
 dropZone.addEventListener('drop', handleFileSelect, false);
+$('#file').on('change', handleFileSelect);

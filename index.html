@@ -9,7 +9,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link type="text/css" rel="stylesheet" href="/css/style.css">
 </head>
-
 <body>
   <output id="outputList"></output>
   <div id="drop_zone"></div>
@@ -22,10 +21,11 @@
         </button>
     </div>
     <ul id="messages"></ul>
-    <form action="">
-      <input type="file" id="file" name="files[]">
+    <form action="handleFileSelect">
+      <input type="file" id="file">
       <label id="paperclip" for="file"></label>
       <div id="input-container">
+        <div id="thumbnail"></div>
         <input id="m" autocomplete="off" autofocus />
         <button id="btn"></button>
       </div>

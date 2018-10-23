@@ -53,6 +53,14 @@ body {
     transform: rotate(15deg);
 }
 
+#thumbnail {
+    width: 44px;
+    height: 34px;
+    border-radius: 50%;
+    background-size: cover;
+    display: none;
+}
+
 #btn {
     background-image: url(../img/sendicon.png);
     background-size: 20px;
@@ -113,7 +121,7 @@ input:focus {
 form input {
     border: none;
     width: 100%;
-    padding: 8px;
+    padding: 6px;
     background: none;
 }
 
@@ -262,11 +270,20 @@ i {
 }
 
 #drop_zone{
-    position: absolute;
+    position: fixed;
     top: 50px;
     bottom: 62px;
     left: 0;
     right: 0;
+}
+
+.msgimg{
+    border: 1px solid white;
+    padding: 2px;
+    border-radius: 6px;
+    box-shadow: 0px 1px 5px black;
+    max-width: 100px;
+    max-height: 70px;
 }
  
  /*Get rid of "No file chosen" text*/
