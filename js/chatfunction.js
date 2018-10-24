@@ -190,7 +190,7 @@ $("form").submit(function() {
         return false;
       }
       msg.text = msgtext.substring(spaceIndex + 1, msgtext.length);
-      if (msg.text == "") return false;
+      if (msg.text == "" && msg.file == null) return false;
       socket.emit("private message", msg);
       $("#messages").append(
         createMsgBubblePrivate(
