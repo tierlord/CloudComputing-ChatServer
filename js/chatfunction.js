@@ -90,11 +90,19 @@ function createMsgBubblePrivate(name, time, msg, recipient, file) {
   msgBubble += '<p class="timestamp">' + time + "</p></div>";
   msgBubble += '<p class="message">' + msg + "</p>";
   if (file != null) {
-    msgBubble += '<a href="' + file + '" download="nice">';
-    msgBubble +=
-      '<img class="msgimg" onmouseover="bigImg(event)" onmouseleave="normImg(event)" src="' +
-      file +
-      '"></img></a>';
+    var type = mimeTypeOf(file);
+    if (type.startsWith("image")) {
+        msgBubble += '<a href="' + file + '" download="' + type + '">';
+        msgBubble +=
+        '<img class="msgimg" onmouseover="bigImg(event)" onmouseleave="normImg(event)" src="' + file + '"></img></a>';
+    }
+    if (type.startsWith("video")) {
+      msgBubble +=
+        '<video controls class="msgvid"><source type="' + type + '" src="' + file + '"></video></a>';
+    }
+    if (type.startsWith("audio")) {
+        msgBubble += '<audio controls class="msgaudio"><source type="' + type + '" src="' + file + '"></audio></a>';
+    }
   }
   msgBubble += "</div>";
   return msgBubble;
