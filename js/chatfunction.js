@@ -60,7 +60,13 @@ function createMsgBubble(name, time, msg, file){
     msgBubble +=    '<p class="message">' + msg + '</p>';
     if(file != null){
         msgBubble += '<a href="' + file + '" download="nice">';
-        msgBubble += '<img class="msgimg" onmouseover="bigImg(event)" onmouseleave="normImg(event)" src="' + file + '"></img></a>';
+        var type = mimeTypeOf(file);
+        if(type.startsWith('image')){
+            msgBubble += '<img class="msgimg" onmouseover="bigImg(event)" onmouseleave="normImg(event)" src="' + file + '"></img></a>';
+        }
+        if(type.startsWith('video')){
+            msgBubble += '<video controls class="msgvid" src="' + file + '"></img></a>';
+        }        
     }
     msgBubble +=    '</div>'
     return msgBubble;
@@ -236,3 +242,4 @@ function addPrivate(name){
 function scrollDown(){
     window.scrollTo(0, document.body.scrollHeight);
 }
+
