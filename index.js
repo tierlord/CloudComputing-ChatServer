@@ -5,7 +5,6 @@ var io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
 
 var userHandler = require('./userHandler');
-var fileHandler = require('./fileHandler');
 
 // This is to serve static files to the client
 app.use('/js', express.static('js'));

@@ -3,25 +3,32 @@ html {
 }
 
 body {
-    background: url(/img/cream.jpg);
+    background: url(/img/bg1.jpg);
 	background-size: cover;
     background-attachment: fixed;
+    background-position: center;
     height: calc(100% - 70px);
 }
 
 .header {
+    z-index: 10;
     height: 50px;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     border-bottom: 1px solid white;
-    box-shadow: 0 2px 16px #9e9e9e;
+    box-shadow: 0 2px 16px #000000;
     background: rgb(255,255,255);
     background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(243,243,243,0.6) 49%, rgba(243,243,243,0.7) 50%, rgba(237,237,237,0.6) 55%, rgba(255,255,255,1) 100%);
     background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(243,243,243,0.6) 49%, rgba(243,243,243,0.7) 50%, rgba(237,237,237,0.6) 55%, rgba(255,255,255,1) 100%);
-    background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(243,243,243,0.6) 49%, rgba(243,243,243,0.7) 50%, rgba(237,237,237,0.6) 55%, rgba(255,255,255,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff',GradientType=0 );
+    background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(243,243,243,0.8) 49%, rgba(243,243,243,0.8) 50%, rgba(237,237,237,0.6) 55%, rgba(255,255,255,1) 100%);
+}
+
+#container {
+    width: 90%;
+    margin: 0 auto;
+    max-width: 800px;
 }
 
 #file {
@@ -54,12 +61,14 @@ body {
 }
 
 #thumbnail {
-    width: 44px;
+    width: 34px;
     height: 34px;
     border-radius: 50%;
     background-size: cover;
     display: none;
     cursor: pointer;
+    flex-grow: 0;
+    flex-shrink: 0;
 }
 
 #btn {
@@ -70,6 +79,8 @@ body {
     width: 34px;
     height: 34px;
     border-radius: 20px;
+    flex-grow: 0;
+    flex-shrink: 0;
     cursor: pointer;
 }
 
@@ -87,12 +98,6 @@ ol {
     margin: 0;
 }
 
-#container {
-    width: 90%;
-    margin: 0 auto;
-    max-width: 800px;
-}
-
 form {
     position: fixed;
     display: flex;
@@ -101,7 +106,7 @@ form {
     right: 0;
     height: 40px;
     padding: 10px;
-    background: #d8d8d8;
+    background: #d8d8d8d9;
     border: 1px solid #ccc;
 }
 
@@ -131,7 +136,7 @@ form input:focus ~ #input-container {
 }
 
 form button {
-    background: rgb(130, 224, 255);
+    background: rgb(154, 129, 212);
     border: none;
     padding: 10px;
 }
@@ -144,40 +149,46 @@ form button {
 }
 
 .bubble {
-    border: 1px solid #ccc;
-    margin: 10px;
-    border-radius: 10px;
-    padding: 0px 8px;
-    background: #6fcef2;
-    box-shadow: 2px 1px 8px gray;
-    margin-right: 20%;
-    overflow-wrap: break-word;
-}
-
-.lightBubble {
-    border: 1px solid #ccc;
-    margin: 10px;
-    border-radius: 10px;
-    padding: 0px 8px;
-    background: #c4d4ed;
-    box-shadow: 2px 1px 8px gray;
-    color:darkgrey;
-}
-
-.bubbleright {
     color: white;
     border: 1px solid #ccc;
     margin: 10px;
     border-radius: 10px;
     padding: 0px 8px;
-    background: #5a46b4;
-    box-shadow: 2px 0px 2px gray;
-    margin-left: 20%;
+    background: rgba(44, 38, 80, 0.7);
+    box-shadow: 2px 0px 2px grey;
+    margin-left: auto;
+    margin-right: 20%;
     overflow-wrap: break-word;
 }
 
+.right {
+    margin-left: 20%;
+    margin-right: auto;
+    color: black;
+    border-color: dimgrey;
+    background: rgba(218, 137, 58, 0.89)
+}
+
+.private {
+    background: rgba(121, 34, 142, 0.81);
+    border-color: #854992;
+}
+
+.lightBubble {
+    text-align: center;
+    border: 1px solid #6d6d6d;
+    width: 80%;
+    margin: auto;
+    margin-bottom: 5px;
+    border-radius: 10px;
+    padding: 0px 8px;
+    background: rgba(214, 222, 234, 0.38);
+    box-shadow: 2px 1px 8px grey;
+    color: #292929;
+}
+
 .head {
-    border-bottom: 1px solid #62b1cf;
+    border-bottom: 1px solid #fed5b3;
     width: 100%;
     height: 24px;
     display: flex;
@@ -185,7 +196,7 @@ form button {
 }
 
 .headright {
-    border-bottom: 1px solid #7f6adb;
+    border-bottom: 1px solid #867bb5a8;
     width: 100%;
     height: 24px;
     display: flex;
@@ -215,10 +226,11 @@ p {
     position: fixed;
     top: 52px;
     right: 15px;
-    background: white;
-    box-shadow: 0px 2px 4px grey;
-    min-width: 150px;
+    background: #ffffffd6;
+    box-shadow: 0px 2px 4px black;
+    min-width: 230px;
     display: block;
+    border-radius: 0 0 5px 5px;
 }
 
 .listItem {
@@ -234,7 +246,11 @@ p {
     -webkit-transition: background-color 600ms linear;
     -ms-transition: background-color 600ms linear;
     transition: background-color 600ms linear;
+}
 
+.ownusr {
+    color: #6300fd;
+    font-style: italic;
 }
 
 .navbar-toggle {
@@ -276,10 +292,11 @@ i {
     bottom: 62px;
     left: 0;
     right: 0;
+    z-index: 1;
 }
 
 .msgimg{
-    border: 1px solid white;
+    border: 1px solid #ffffff5c;
     padding: 2px;
     border-radius: 6px;
     box-shadow: 0px 1px 5px black;
@@ -309,11 +326,15 @@ input[type='file'] {
 }
 
 #close{
+    background: #585858;
+    height: 10px;
+    width: 12px;
+    border: 1px solid white;
+    border-radius: 10px;
     font-weight: bold;
-    margin-top: -5px;
     display: none;
-    margin-left: -31px;
-    color: red;
-    font-size: 40px;
+    margin-left: -8px;
     cursor: pointer;
+    background-image: url('../img/close.png');
+    background-size: cover;
 }

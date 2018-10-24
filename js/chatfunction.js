@@ -23,8 +23,10 @@ $(document).ready(function(){
         }
     });
 
+    setupDragDropListeners();
+
     $('body').on('click',function(e){
-        var tar = $(event.target).attr('class');
+        var tar = $(e.target).attr('class');
         if($("#listBox").is(":visible")){
             if(tar != 'navbar-toggle' && tar != 'icon-bar'){
                 $('#listBox').fadeOut();
@@ -49,27 +51,36 @@ function parseMsg(m){
 
 function createMsgBubble(name, time, msg, file){
     if(name == usr){
-        var msgBubble = '<div class="bubbleright animated"><div class="headright">';
+        var msgBubble = '<div class="bubble right animated"><div class="headright">';
     } else {
         var msgBubble = '<div class="bubble animated"><div class="head">';
     }
     msgBubble +=    '<p class="name">' + name + '</p>';
     msgBubble +=    '<p class="timestamp">' + time + '</p></div>';
     msgBubble +=    '<p class="message">' + msg + '</p>';
-    if(file != null) msgBubble += '<img class="msgimg" src="' + file + '"></img>';
+    if(file != null){
+        msgBubble += '<a href="' + file + '" download="nice">';
+        msgBubble += '<img class="msgimg" onmouseover="bigImg(event)" onmouseleave="normImg(event)" src="' + file + '"></img></a>';
+    }
     msgBubble +=    '</div>'
     return msgBubble;
 }
 
-function createMsgBubblePrivate(name, time, msg, recipient){
-    if(name == usr) {
-        var msgBubble = '<div class="bubbleright animated"><div class="headright">';
+function createMsgBubblePrivate(name, time, msg, recipient, file){
+    if(name == usr){
+        var msgBubble = '<div class="bubble right animated"><div class="headright">';
     } else {
-        var msgBubble = '<div class="bubble animated"><div class="head">';
+        console.log("Received private msg by " + name);
+        var msgBubble = '<div class="bubble private animated"><div class="head">';
     }
-    msgBubble +=    '<p class="name">' + '<i></i> Private: ' + recipient + '</p>';
+    msgBubble +=    '<p class="name">' + '<i></i> Private: ' + name + '</p>';
     msgBubble +=    '<p class="timestamp">' + time + '</p></div>';
-    msgBubble +=    '<p class="message">' + msg + '</p></div>';
+    msgBubble +=    '<p class="message">' + msg + '</p>';
+    if(file != null){
+        msgBubble += '<a href="' + file + '" download="nice">';
+        msgBubble += '<img class="msgimg" onmouseover="bigImg(event)" onmouseleave="normImg(event)" src="' + file + '"></img></a>';
+    }
+    msgBubble +=    '</div>'
     return msgBubble;
 }
 
@@ -89,7 +100,11 @@ $('form').submit(function(){
     if(usr == '') return false; // Don't do anything if you're a guest
     
     var msgtext = $('#m').val();
-    if(msgtext == '') return false;
+    
+    // don't send if there is nothing to send
+    if(msgtext == ''){
+        if(attachedFile == null) return false;
+    }
 
     // Create a message object
     var msg = {
@@ -111,23 +126,27 @@ $('form').submit(function(){
     if(msgtext.charAt(0) == '@'){
         var spaceIndex = msgtext.indexOf(' ');
         if(spaceIndex != -1){
-            msg.recipient = msgtext.substring(1, spaceIndex);
+            var recp = msgtext.substring(1, spaceIndex);
+            if(userList.indexOf(recp) > -1) msg.recipient = recp;
+            else {
+                alert("There is no user called "+ recp);
+                return false;
+            }
             msg.text = msgtext.substring(spaceIndex+1, msgtext.length);
             if(msg.text == '') return false;
             socket.emit('private message', msg);
-            $('#messages').append(createMsgBubblePrivate(usr, getTime(), msg.text, msg.recipient));
+            $('#messages').append(createMsgBubblePrivate(usr, getTime(), msg.text, msg.recipient, msg.file));
         } else return false; // When there is no message
     
         // If public message
     } else {        
         msg.recipient = 'all';
         msg.text = msgtext;
-        //msg.file = "data:image/png;base64,"+ img.toString("base64");
         socket.emit('chat message', msg);
         $('#messages').append(createMsgBubble(usr, getTime(), msgtext, msg.file));
     }    
     $('#m').val('');
-    window.scrollTo(0, document.body.scrollHeight);
+    scrollDown();
     $('#m').focus();
     return false;
 });
@@ -137,24 +156,25 @@ $('form').submit(function(){
 socket.on('chat message', function(msg){
     if(msg.sender != usr){
         $('#messages').append(createMsgBubble(msg.sender, msg.time, msg.text, msg.file));
-        window.scrollTo(0, document.body.scrollHeight);
+        scrollDown();
     }    
 });
 
 socket.on('private message', function(msg){
     if(msg.sender != usr){
-        $('#messages').append(createMsgBubblePrivate(msg.sender, msg.time, msg.text, msg.recipient));
+        $('#messages').append(createMsgBubblePrivate(msg.sender, msg.time, msg.text, msg.recipient, msg.file));
+        scrollDown();
     }
 });
 
 socket.on('enter chat',function(username){
     $('#messages').append(enterNotification(username));
-    window.scrollTo(0, document.body.scrollHeight);
+    scrollDown();
 });
 
 socket.on('exit chat', function(username){
     $('#messages').append(exitNotification(username));
-    window.scrollTo(0, document.body.scrollHeight);
+    scrollDown();
 });
 
 socket.on('user list', function(list){
@@ -188,7 +208,11 @@ function updateList(){
     list.empty();
     for(var i = 0; i < userList.length; i++){
         var usnm = userList[i];
-        list.append('<li class="listItem" onclick="addPrivate(\''+usnm+'\')">'+usnm+'</li>');
+        if(usnm == usr){ // Own user
+            list.append('<li class="listItem ownusr">'+usnm+'</li>');
+        } else {
+            list.append('<li class="listItem" onclick="addPrivate(\''+usnm+'\')">'+usnm+'</li>');
+        }        
     }
 }
 
@@ -209,70 +233,6 @@ function addPrivate(name){
     $('#m').focus();
 }
 
-//----------------------------------------------------------------------------------
-//Drag and Drop
-
-function handleFileSelect(evt) {
-    evt.stopPropagation();
-    evt.preventDefault();    
-
-    // Hide the dropzone
-    var dz = $('#drop_zone');
-    dz.css('border','none');
-    dz.css('background','none');
-
-    var files;
-    if(evt.type == 'drop'){
-        files = evt.dataTransfer.files; // FileList object.
-    } else {
-        files = document.getElementById('file').files;
-    }
-
-    var reader = new FileReader();
-    reader.onload = function(){
-        var dataURL = reader.result;
-        attachedFile = dataURL;
-        var thumb = $('#thumbnail');
-        thumb.css('background-image', 'url(' + attachedFile + ')');
-        thumb.fadeIn("slow", function(){$('#close').show();});        
-    };
-    reader.readAsDataURL(files[0]);
-
-}
-
-function handleDragOver(evt) {
-    evt.stopPropagation();
-    evt.preventDefault();
-    evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
-    var dz = $('#drop_zone');
-    dz.css('border', '2px dashed #555');
-    dz.css('background','#ffffffab');
-}
-
-function handleDragEnd(evt){
-    var dz = $('#drop_zone');
-    dz.css('border','none');
-    dz.css('background','none');
-}
-
-// Setup the dnd listeners.
-var dropZone = document.getElementById('drop_zone');
-dropZone.addEventListener('dragover', handleDragOver, false);
-dropZone.addEventListener('dragleave', handleDragEnd, false);
-dropZone.addEventListener('drop', handleFileSelect, false);
-$('#file').on('change', handleFileSelect);
-
-function deleteAtt(){
-    attachedFile=null;
-    $('#thumbnail').fadeOut();
-    $('#close').hide();
-}
-
-function mouseDown(){
-    $('#drop_zone').hide();
-}
-
-function mouseUp(){
-    $(this).attr('download','element');
-     $('#drop_zone').show();
+function scrollDown(){
+    window.scrollTo(0, document.body.scrollHeight);
 }

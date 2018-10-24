@@ -10,23 +10,22 @@
   <link type="text/css" rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <output id="outputList"></output>
-  <div id="drop_zone" onmousedown="mouseDown()" onmouseup="mouseUp()"></div>
+  <div id="drop_zone"></div>
   <div id="container">
-    <div class="header">
+      <div class="header">
       <button class="navbar-toggle" id="navbar-toggleId" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse" onclick="showList()">
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-    </div>
+      </div>
     <ul id="messages"></ul>
     <form>
       <input type="file" id="file">
       <label id="paperclip" for="file"></label>
       <div id="input-container">
         <div id="thumbnail"></div>
-        <div id="close" onclick="deleteAtt()">&times;</div>
+        <div id="close" onclick="deleteAtt()"></div>
         <input id="m" autocomplete="off" autofocus />
         <button id="btn"></button>
       </div>
@@ -39,5 +38,6 @@
   <script src="/js/socket.io-1.2.0.js"></script>
   <script src="/js/jquery-3.3.1.min.js"></script>
   <script src="/js/chatfunction.js"></script>
+  <script src="/js/filehandler.js"></script>
 </body>
 </html>
