@@ -60,10 +60,8 @@ function createMsgBubble(name, time, msg, file) {
   msgBubble += '<p class="timestamp">' + time + "</p></div>";
   msgBubble += '<p class="message">' + msg + "</p>";
   if (file != null) {
-    var fileName = getFilename(file);
-    console.log(fileName);
-    msgBubble += '<a href="' + file + '" download="nice">';
     var type = mimeTypeOf(file);
+    msgBubble += '<a href="' + file + '" download="' + type + '"nice">';
     if (type.startsWith("image")) {
       msgBubble +=
         '<img class="msgimg" onmouseover="bigImg(event)" onmouseleave="normImg(event)" src="' +
@@ -74,8 +72,8 @@ function createMsgBubble(name, time, msg, file) {
       msgBubble +=
         '<video controls class="msgvid" src="' + file + '"></img></a>';
     }
-    if (type.startsWith("audio")) {
-    }
+    // if (type.startsWith("audio")) {
+    // }
   }
   msgBubble += "</div>";
   return msgBubble;
