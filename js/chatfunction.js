@@ -1,3 +1,6 @@
+// Alina Elena Aldea-Ionescu - 310194
+// Joffrey Schneider - 762380
+
 var socket = io();
 var usr = ""; // username
 var userList = []; // list of users
@@ -62,16 +65,27 @@ function createMsgBubble(name, time, msg, file) {
   if (file != null) {
     var type = mimeTypeOf(file);
     if (type.startsWith("image")) {
-        msgBubble += '<a href="' + file + '" download="' + type + '">';
-        msgBubble +=
-        '<img class="msgimg" onmouseover="bigImg(event)" onmouseleave="normImg(event)" src="' + file + '"></img></a>';
+      msgBubble += '<a href="' + file + '" download="' + type + '">';
+      msgBubble +=
+        '<img class="msgimg" onmouseover="bigImg(event)" onmouseleave="normImg(event)" src="' +
+        file +
+        '"></img></a>';
     }
     if (type.startsWith("video")) {
       msgBubble +=
-        '<video controls class="msgvid"><source type="' + type + '" src="' + file + '"></video></a>';
+        '<video controls class="msgvid"><source type="' +
+        type +
+        '" src="' +
+        file +
+        '"></video></a>';
     }
     if (type.startsWith("audio")) {
-        msgBubble += '<audio controls class="msgaudio"><source type="' + type + '" src="' + file + '"></audio></a>';
+      msgBubble +=
+        '<audio controls class="msgaudio"><source type="' +
+        type +
+        '" src="' +
+        file +
+        '"></audio></a>';
     }
   }
   msgBubble += "</div>";
@@ -92,16 +106,27 @@ function createMsgBubblePrivate(name, time, msg, recipient, file) {
   if (file != null) {
     var type = mimeTypeOf(file);
     if (type.startsWith("image")) {
-        msgBubble += '<a href="' + file + '" download="' + type + '">';
-        msgBubble +=
-        '<img class="msgimg" onmouseover="bigImg(event)" onmouseleave="normImg(event)" src="' + file + '"></img></a>';
+      msgBubble += '<a href="' + file + '" download="' + type + '">';
+      msgBubble +=
+        '<img class="msgimg" onmouseover="bigImg(event)" onmouseleave="normImg(event)" src="' +
+        file +
+        '"></img></a>';
     }
     if (type.startsWith("video")) {
       msgBubble +=
-        '<video controls class="msgvid"><source type="' + type + '" src="' + file + '"></video></a>';
+        '<video controls class="msgvid"><source type="' +
+        type +
+        '" src="' +
+        file +
+        '"></video></a>';
     }
     if (type.startsWith("audio")) {
-        msgBubble += '<audio controls class="msgaudio"><source type="' + type + '" src="' + file + '"></audio></a>';
+      msgBubble +=
+        '<audio controls class="msgaudio"><source type="' +
+        type +
+        '" src="' +
+        file +
+        '"></audio></a>';
     }
   }
   msgBubble += "</div>";
@@ -109,12 +134,12 @@ function createMsgBubblePrivate(name, time, msg, recipient, file) {
 }
 
 function enterNotification(name) {
-    var msgBubble =
+  var msgBubble =
     '<div class="lightBubble"><p class="name">' +
     name +
     " has joined the chat" +
     "</p></div>";
-    return msgBubble;
+  return msgBubble;
 }
 
 function exitNotification(name) {
@@ -218,10 +243,10 @@ socket.on("private message", function(msg) {
 });
 
 socket.on("enter chat", function(username) {
-    console.log("Enter chat: " + username);
-    if(username == null) return false;
-    $("#messages").append(enterNotification(username));
-    scrollDown();
+  console.log("Enter chat: " + username);
+  if (username == null) return false;
+  $("#messages").append(enterNotification(username));
+  scrollDown();
 });
 
 socket.on("exit chat", function(username) {
