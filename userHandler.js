@@ -1,3 +1,6 @@
+// Alina Elena Aldea-Ionescu - 310194
+// Joffrey Schneider - 762380
+
 var userList = [];
 
 var methods = {

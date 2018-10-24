@@ -1,3 +1,6 @@
+<!-- Alina Elena Aldea-Ionescu - 310194
+Joffrey Schneider - 762380 -->
+
 # chat-example
 
 This is the source code for a very simple chat example used for

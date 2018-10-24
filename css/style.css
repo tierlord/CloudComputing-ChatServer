@@ -1,3 +1,6 @@
+/* Alina Elena Aldea-Ionescu - 310194
+Joffrey Schneider - 762380 */
+
 html {
   height: 100%;
   background: url(/img/bg1.jpg);
@@ -47,8 +50,8 @@ body {
 }
 
 #headerimg {
-    margin: 10px;
-    height: 36px;
+  margin: 10px;
+  height: 36px;
 }
 
 #container {
@@ -329,8 +332,8 @@ i {
 }
 
 .msgaudio {
-    display: block;
-    margin: 10px auto;
+  display: block;
+  margin: 10px auto;
 }
 
 .msgvid {
@@ -376,4 +379,3 @@ input[type="file"] {
   background-image: url("../img/close.png");
   background-size: cover;
 }
-

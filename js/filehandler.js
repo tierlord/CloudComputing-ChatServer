@@ -1,3 +1,6 @@
+// Alina Elena Aldea-Ionescu - 310194
+// Joffrey Schneider - 762380
+
 function handleFileSelect(evt) {
   evt.stopPropagation();
   evt.preventDefault();
@@ -15,39 +18,36 @@ function handleFileSelect(evt) {
   }
 
   // Get the inputfield and save the value for after the upload
-  var m = $('#m');
+  var m = $("#m");
   var oldval = m.val();
 
   var reader = new FileReader();
   reader.onload = function() {
     m.val(oldval);
-    m.prop('disabled', false);
+    m.prop("disabled", false);
     var dataURL = reader.result;
     attachedFile = dataURL;
     var thumb = $("#thumbnail");
-    if(mimeTypeOf(attachedFile).startsWith('image')){
-        thumb.css("background-image", "url(" + attachedFile + ")");
-    }
-    else if(mimeTypeOf(attachedFile).startsWith('video')){
-        thumb.css("background-image", "url('../img/videoThumb.png')");
-    }
-    else if(mimeTypeOf(attachedFile).startsWith('audio')){
-        thumb.css("background-image", "url('../img/audioThumb.png')");
-    }
-    else {
-        alert("Filetype not supported.");
-        attachedFile = null;
-        dataURL = null;
+    if (mimeTypeOf(attachedFile).startsWith("image")) {
+      thumb.css("background-image", "url(" + attachedFile + ")");
+    } else if (mimeTypeOf(attachedFile).startsWith("video")) {
+      thumb.css("background-image", "url('../img/videoThumb.png')");
+    } else if (mimeTypeOf(attachedFile).startsWith("audio")) {
+      thumb.css("background-image", "url('../img/audioThumb.png')");
+    } else {
+      alert("Filetype not supported.");
+      attachedFile = null;
+      dataURL = null;
     }
     thumb.fadeIn("slow", function() {
       $("#close").show();
     });
     dataURL = null;
   };
-  reader.onloadstart = function(){
-      m.prop('disabled', true);
-      m.val('Loading...');
-  }
+  reader.onloadstart = function() {
+    m.prop("disabled", true);
+    m.val("Loading...");
+  };
 
   reader.readAsDataURL(files[0]);
 }
