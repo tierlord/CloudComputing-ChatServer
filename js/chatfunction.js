@@ -61,19 +61,18 @@ function createMsgBubble(name, time, msg, file) {
   msgBubble += '<p class="message">' + msg + "</p>";
   if (file != null) {
     var type = mimeTypeOf(file);
-    msgBubble += '<a href="' + file + '" download="' + type + '"nice">';
     if (type.startsWith("image")) {
-      msgBubble +=
-        '<img class="msgimg" onmouseover="bigImg(event)" onmouseleave="normImg(event)" src="' +
-        file +
-        '"></img></a>';
+        msgBubble += '<a href="' + file + '" download="' + type + '">';
+        msgBubble +=
+        '<img class="msgimg" onmouseover="bigImg(event)" onmouseleave="normImg(event)" src="' + file + '"></img></a>';
     }
     if (type.startsWith("video")) {
       msgBubble +=
-        '<video controls class="msgvid" src="' + file + '"></img></a>';
+        '<video controls class="msgvid"><source type="' + type + '" src="' + file + '"></video></a>';
     }
-    // if (type.startsWith("audio")) {
-    // }
+    if (type.startsWith("audio")) {
+        msgBubble += '<audio controls class="msgaudio"><source type="' + type + '" src="' + file + '"></audio></a>';
+    }
   }
   msgBubble += "</div>";
   return msgBubble;
@@ -102,12 +101,12 @@ function createMsgBubblePrivate(name, time, msg, recipient, file) {
 }
 
 function enterNotification(name) {
-  var msgBubble =
+    var msgBubble =
     '<div class="lightBubble"><p class="name">' +
     name +
     " has joined the chat" +
     "</p></div>";
-  return msgBubble;
+    return msgBubble;
 }
 
 function exitNotification(name) {
@@ -211,8 +210,10 @@ socket.on("private message", function(msg) {
 });
 
 socket.on("enter chat", function(username) {
-  $("#messages").append(enterNotification(username));
-  scrollDown();
+    console.log("Enter chat: " + username);
+    if(username == null) return false;
+    $("#messages").append(enterNotification(username));
+    scrollDown();
 });
 
 socket.on("exit chat", function(username) {
@@ -248,6 +249,7 @@ function getTime() {
 function updateList() {
   console.log("Update Userlist, length: " + userList.length);
   var list = $("#userListBox");
+
   list.empty();
   for (var i = 0; i < userList.length; i++) {
     var usnm = userList[i];

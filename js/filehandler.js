@@ -1,5 +1,4 @@
 function handleFileSelect(evt) {
-  console.log("OKAY");
   evt.stopPropagation();
   evt.preventDefault();
 
@@ -15,16 +14,41 @@ function handleFileSelect(evt) {
     files = document.getElementById("file").files;
   }
 
+  // Get the inputfield and save the value for after the upload
+  var m = $('#m');
+  var oldval = m.val();
+
   var reader = new FileReader();
   reader.onload = function() {
+    m.val(oldval);
+    m.prop('disabled', false);
     var dataURL = reader.result;
     attachedFile = dataURL;
     var thumb = $("#thumbnail");
-    thumb.css("background-image", "url(" + attachedFile + ")");
+    if(mimeTypeOf(attachedFile).startsWith('image')){
+        thumb.css("background-image", "url(" + attachedFile + ")");
+    }
+    else if(mimeTypeOf(attachedFile).startsWith('video')){
+        thumb.css("background-image", "url('../img/videoThumb.png')");
+    }
+    else if(mimeTypeOf(attachedFile).startsWith('audio')){
+        thumb.css("background-image", "url('../img/audioThumb.png')");
+    }
+    else {
+        alert("Filetype not supported.");
+        attachedFile = null;
+        dataURL = null;
+    }
     thumb.fadeIn("slow", function() {
       $("#close").show();
     });
+    dataURL = null;
   };
+  reader.onloadstart = function(){
+      m.prop('disabled', true);
+      m.val('Loading...');
+  }
+
   reader.readAsDataURL(files[0]);
 }
 
@@ -45,7 +69,7 @@ function handleDragEnd(evt) {
   dz.hide();
 }
 
-// Setup the listeners.
+// Setup the listeners
 function setupDragDropListeners() {
   var dropZone = document.getElementById("drop_zone");
   var container = document.getElementById("container");
@@ -66,16 +90,19 @@ function setupDragDropListeners() {
   $("#file").on("change", handleFileSelect);
 }
 
+// Mouseover image event
 function bigImg(event) {
   var target = event.target;
   $(target).animate(
     {
-      maxHeight: 500,
-      maxWidth: "98%"
+      maxHeight: 300,
+      maxWidth: 500
     },
     scrollDown
   );
 }
+
+// Mouseleave image event
 function normImg(event) {
   var target = event.target;
   $(target).animate({
@@ -84,6 +111,7 @@ function normImg(event) {
   });
 }
 
+// Delete attachment
 function deleteAtt() {
   attachedFile = null;
   $("#thumbnail").fadeOut();

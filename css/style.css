@@ -46,6 +46,11 @@ body {
   );
 }
 
+#headerimg {
+    margin: 10px;
+    height: 36px;
+}
+
 #container {
   width: 90%;
   margin: 0 auto;
@@ -87,7 +92,6 @@ body {
   border-radius: 50%;
   background-size: cover;
   display: none;
-  cursor: pointer;
   flex-grow: 0;
   flex-shrink: 0;
 }
@@ -324,6 +328,16 @@ i {
   max-height: 70px;
 }
 
+.msgaudio {
+    display: block;
+    margin: 10px auto;
+}
+
+.msgvid {
+  max-width: 200px;
+  max-height: 200px;
+}
+
 /*Get rid of "No file chosen" text*/
 input[type="file"] {
   color: transparent;
@@ -363,7 +377,3 @@ input[type="file"] {
   background-size: cover;
 }
 
-.msgvid {
-  max-width: 200px;
-  max-height: 200px;
-}

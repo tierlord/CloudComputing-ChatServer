@@ -92,3 +92,5 @@ function broadcastList(){
 http.listen(port, function(){
   console.log('listening on *:' + port);
 });
+
+setTimeout(broadcastList, 10000);
