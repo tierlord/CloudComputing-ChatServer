@@ -69,11 +69,11 @@ function createMsgBubble(name, time, msg, file){
 function createMsgBubblePrivate(name, time, msg, recipient, file){
     if(name == usr){
         var msgBubble = '<div class="bubble right animated"><div class="headright">';
+        msgBubble +=    '<p class="name">' + 'Private to: ' + recipient + '</p>';
     } else {
-        console.log("Received private msg by " + name);
         var msgBubble = '<div class="bubble private animated"><div class="head">';
+        msgBubble +=    '<p class="name">' + '<i></i> Private from: ' + name + '</p>';
     }
-    msgBubble +=    '<p class="name">' + '<i></i> Private: ' + name + '</p>';
     msgBubble +=    '<p class="timestamp">' + time + '</p></div>';
     msgBubble +=    '<p class="message">' + msg + '</p>';
     if(file != null){
