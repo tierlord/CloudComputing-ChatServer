@@ -119,26 +119,33 @@ function checkMood(msg){
 }
 
 function getDbUserByName(name, conn){
-  var d;
   ibmdb.open("DATABASE=BLUDB;HOSTNAME=dashdb-txn-sbox-yp-lon02-01.services.eu-gb.bluemix.net;PORT=50001;PROTOCOL=TCPIP;UID=wwz36807;PWD=wb2fttzm+cgl8nwv;Security=SSL;", function (err,conn) {
     if (err) return console.log(err);
     conn.query("select * from users where username = '" + name + "'", function (err, data) {
       if (err) console.log(err);
-      else console.log(data);
-      d = data;
+      else console.log(data[0].USERNAME);
     });
     conn.close(function () {
       console.log('DB connection closed');
     });
   });
-  return d;
+}
+
+function createDbUser(name, pw, pic, lasttime){
+  ibmdb.open("DATABASE=BLUDB;HOSTNAME=dashdb-txn-sbox-yp-lon02-01.services.eu-gb.bluemix.net;PORT=50001;PROTOCOL=TCPIP;UID=wwz36807;PWD=wb2fttzm+cgl8nwv;Security=SSL;", function (err,conn) {
+    if (err) return console.log(err);
+    conn.query("insert into users values ('"+name+"', '"+pw+"', '"+pic+"', '"+lasttime+"');", function (err, data) {
+      if (err) console.log(err);
+    });
+    conn.close(function () {
+    });
+  });
 }
 
 // This is the command to start the server
 http.listen(port, function() {
   console.log("listening on *:" + port);
-  //createDbUser()
-  getDbUserByName("lord");
+  getDbUserByName("test");
 });
 
 setTimeout(broadcastList, 10000);
