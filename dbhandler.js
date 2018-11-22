@@ -1,5 +1,19 @@
-var dbhost = "dashdb-txn-sbox-yp-lon02-01.services.eu-gb.bluemix.net";
-var dbpw = "wb2fttzm+cgl8nwv";
-var dburl = "https://dashdb-txn-sbox-yp-lon02-01.services.eu-gb.bluemix.net:8443"
-var port = 50000;
+var methods = {
+    getDbUserByName: function(name, conn){
+        conn.query('select * from users where username = ' + name, function (err, data) {
+            if (err) console.log(err);
+            else console.log(data);
+            return data;
+    });
+},
+
+    closeDb: function(conn){
+        conn.close(function () {
+            console.log('DB connection closed');
+          });
+    }
+
+}
+
+module.exports = methods;
 
