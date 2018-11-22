@@ -236,6 +236,10 @@ form button {
   width: 100%;
 }
 
+.mood {
+  width: 100%;
+}
+
 .timestamp {
   font-size: smaller;
 }

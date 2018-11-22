@@ -4,6 +4,7 @@
 var express = require("express");
 var app = express();
 var http = require("http").Server(app);
+const fetch = require('node-fetch');
 var io = require("socket.io")(http);
 var port = process.env.PORT || 3000;
 
@@ -73,7 +74,8 @@ io.on("connection", function(socket) {
 
   // When a client sends a message, it will be broadcasted to all clients
   socket.on("chat message", function(msg) {
-    io.emit("chat message", msg);
+    msg.mood = checkMood(msg);
+    // io.emit("chat message", msg);
   });
 
   socket.on("private message", function(msg) {
@@ -89,6 +91,27 @@ io.on("connection", function(socket) {
 function broadcastList() {
   var userList = userHandler.getUsers();
   io.emit("user list", userList);
+}
+
+function checkMood(msg){
+  var url = "https://ccchattone.eu-gb.mybluemix.net/tone";
+  var data = JSON.stringify({ texts: [msg.text] });
+
+  fetch(url, {
+      method: 'post',
+      body:    data,
+      headers: {'Content-Type': 'application/json',
+                  'mode': 'cors'},
+  })
+  .then(res => res.json())
+  .then(function(json) {
+    //msg.mood = JSON.parse(json).mood;
+    var mood = json.mood;
+    console.log("Mood: " + mood);
+    if(mood == "happy") msg.mood = "happy";
+    if(mood == "unhappy") msg.mood = "unhappy";
+    io.emit('chat message', msg);
+  });
 }
 
 // This is the command to start the server
