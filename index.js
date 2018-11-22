@@ -1,6 +1,7 @@
 // Alina Elena Aldea-Ionescu - 310194
 // Joffrey Schneider - 762380
 
+var ibmdb = reqire("ibm_db");
 var express = require("express");
 var app = express();
 var http = require("http").Server(app);
@@ -117,6 +118,26 @@ function checkMood(msg){
 // This is the command to start the server
 http.listen(port, function() {
   console.log("listening on *:" + port);
+
+  var dbhost = "dashdb-txn-sbox-yp-lon02-01.services.eu-gb.bluemix.net";
+  var dbpw = "wb2fttzm+cgl8nwv";
+  var dburl = "https://dashdb-txn-sbox-yp-lon02-01.services.eu-gb.bluemix.net:8443"
+  var port = 50000;
+
+
+  ibmdb.open("DATABASE=<dbname>;HOSTNAME=<myhost>;UID=db2user;PWD=password;PORT=<dbport>;PROTOCOL=TCPIP", function (err,conn) {
+    if (err) return console.log(err);
+    
+    conn.query('select 1 from sysibm.sysdummy1', function (err, data) {
+      if (err) console.log(err);
+      else console.log(data);
+  
+      conn.close(function () {
+        console.log('done');
+      });
+    });
+  });
+
 });
 
 setTimeout(broadcastList, 10000);
