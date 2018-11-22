@@ -4,16 +4,14 @@
   "description": "This is the source code for a very simple chat example used for\r the [Getting Started](http://socket.io/get-started/chat/) guide\r of the Socket.IO website.",
   "main": "index.js",
   "dependencies": {
-    "express": "^4.16.3",
     "https-post": "^0.1.1",
     "ibm_db": "^2.4.1",
     "node-fetch": "^2.3.0",
-    "nodemon": "^1.18.4",
     "socket.io": "^1.7.4"
   },
   "devDependencies": {
-    "express": "^4.16.3",
-    "nodemon": "^1.18.4",
+    "express": "^4.16.4",
+    "nodemon": "^1.18.6",
     "socket.io": "^1.7.4"
   },
   "scripts": {
