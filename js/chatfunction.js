@@ -38,21 +38,12 @@ $(document).ready(function() {
   });
 });
 
-// A message contains username, time and the message itself.
-// The three informations are split by "\;"
-// This function returns an object, that contains the information separated
-function parseMsg(m) {
-  var spl = m.split(";");
-  if (spl.length > 3) return false; // When the chat message contains the split character
-  var msg = {
-    name: spl[0],
-    time: spl[1],
-    text: spl[2]
-  };
-  return msg;
-}
-
-function createMsgBubble(name, time, msg, file) {
+function createMsgBubble(msg) {
+  var mood = msg.mood;
+  console.log(mood);
+  var name = msg.sender;
+  var time = msg.time;
+  var msg  = msg.text;
   if (name == usr) {
     var msgBubble =
       '<div class="bubble right animated"><div class="headright">';
@@ -60,15 +51,17 @@ function createMsgBubble(name, time, msg, file) {
     var msgBubble = '<div class="bubble animated"><div class="head">';
   }
   msgBubble += '<p class="name">' + name + "</p>";
+  if(mood == "happy") msgBubble += '<p class="mood">' + "🙂" + "</p>";
+  if(mood == "unhappy") msgBubble += '<p class="mood">' + "😡" + "</p>";
   msgBubble += '<p class="timestamp">' + time + "</p></div>";
   msgBubble += '<p class="message">' + msg + "</p>";
-  if (file != null) {
-    var type = mimeTypeOf(file);
+  if (msg.file != null) {
+    var type = mimeTypeOf(msg.file);
     if (type.startsWith("image")) {
-      msgBubble += '<a href="' + file + '" download="' + type + '">';
+      msgBubble += '<a href="' + msg.file + '" download="' + type + '">';
       msgBubble +=
         '<img class="msgimg" onmouseover="bigImg(event)" onmouseleave="normImg(event)" src="' +
-        file +
+        msg.file +
         '"></img></a>';
     }
     if (type.startsWith("video")) {
@@ -76,7 +69,7 @@ function createMsgBubble(name, time, msg, file) {
         '<video controls class="msgvid"><source type="' +
         type +
         '" src="' +
-        file +
+        msg.file +
         '"></video></a>';
     }
     if (type.startsWith("audio")) {
@@ -84,7 +77,7 @@ function createMsgBubble(name, time, msg, file) {
         '<audio controls class="msgaudio"><source type="' +
         type +
         '" src="' +
-        file +
+        msg.file +
         '"></audio></a>';
     }
   }
@@ -169,7 +162,8 @@ $("form").submit(function() {
     sender: usr,
     time: getTime(),
     text: "",
-    file: null
+    file: null,
+    mood: ""
   };
 
   if (attachedFile != null) {
@@ -208,7 +202,7 @@ $("form").submit(function() {
     msg.recipient = "all";
     msg.text = msgtext;
     socket.emit("chat message", msg);
-    $("#messages").append(createMsgBubble(usr, getTime(), msgtext, msg.file));
+    $("#messages").append(createMsgBubble(msg));
   }
   $("#m").val("");
   scrollDown();
@@ -221,7 +215,7 @@ $("form").submit(function() {
 socket.on("chat message", function(msg) {
   if (msg.sender != usr) {
     $("#messages").append(
-      createMsgBubble(msg.sender, msg.time, msg.text, msg.file)
+      createMsgBubble(msg)
     );
     scrollDown();
   }
@@ -230,13 +224,7 @@ socket.on("chat message", function(msg) {
 socket.on("private message", function(msg) {
   if (msg.sender != usr) {
     $("#messages").append(
-      createMsgBubblePrivate(
-        msg.sender,
-        msg.time,
-        msg.text,
-        msg.recipient,
-        msg.file
-      )
+      createMsgBubblePrivate(msg)
     );
     scrollDown();
   }

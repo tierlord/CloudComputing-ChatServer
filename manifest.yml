@@ -1,0 +1,4 @@
+applications:
+- name: ccchatroom
+  memory: 512M
+  instances: 1
