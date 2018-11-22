@@ -83,6 +83,7 @@ h1 {
   height: 40px;
   width: 120px;
   background: #5a46b4;
+  border: 1px solid white;
   color: #fff;
   font-size: 18px;
   border-radius: 18px;
@@ -106,5 +107,6 @@ h1 {
 }
 
 #btn-register {
-  background: #9966ff;
+  background: none;
+  border: 1px solid white;
 }
