@@ -37,7 +37,7 @@ function login() {
   });
 }
 
-$("#form").submit(function(e) {
+$("#btn-login").click(function(e) {
   e.preventDefault();
   var t = $("#textfield").val();
   checkValidation(t);

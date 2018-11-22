@@ -77,7 +77,7 @@ h1 {
   font-size: 16;
 }
 
-.loginbox input[type="submit"] {
+.loginbox input[type="button"] {
   border: none;
   outline: none;
   height: 40px;
@@ -89,7 +89,7 @@ h1 {
   border-radius: 18px;
 }
 
-.loginbox input[type="submit"]:hover {
+.loginbox input[type="button"]:hover {
   cursor: pointer;
   background: #61c6d8;
   color: #000;
@@ -107,6 +107,9 @@ h1 {
 }
 
 #btn-register {
-  background: none;
-  border: 1px solid white;
+  background: #000;
+}
+
+#btn-register:hover {
+  color: #5a46b4;
 }

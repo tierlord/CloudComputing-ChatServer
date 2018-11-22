@@ -1,50 +1,63 @@
-<!-- Alina Elena Aldea-Ionescu - 310194
-Joffrey Schneider - 762380 -->
+<!--
+  Alina Elena Aldea-Ionescu - 310194
+  Joffrey Schneider - 762380
+-->
 
-<!doctype html>
+<!DOCTYPE html>
 <html>
+  <head>
+    <title>Let's Chat</title>
+    <!-- Import Google Icon Font -->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <!-- Let browser know website is optimized for mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link type="text/css" rel="stylesheet" href="/css/style.css" />
+  </head>
 
-<head>
-  <title>Let's Chat</title>
-  <!--Import Google Icon Font-->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <!--Let browser know website is optimized for mobile-->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link type="text/css" rel="stylesheet" href="/css/style.css">
-</head>
-
-<body>
-  <div id="drop_zone"></div>
-  <div id="container">
-    <div class="header">
-      <img id="headerimg" src="/img/letsChat.png">
-      <button class="navbar-toggle" id="navbar-toggleId" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse"
-        onclick="showList()">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-    </div>
-    <ul id="messages"></ul>
-    <form>
-      <input type="file" id="file">
-      <label id="paperclip" for="file"></label>
-      <div id="input-container">
-        <div id="thumbnail"></div>
-        <div id="close" onclick="deleteAtt()"></div>
-        <input id="m" autocomplete="off" autofocus />
-        <button id="btn"></button>
+  <body>
+    <div id="drop_zone"></div>
+    <div id="container">
+      <div class="header">
+        <img id="headerimg" src="/img/letsChat.png" />
+        <button
+          class="navbar-toggle"
+          id="navbar-toggleId"
+          type="button"
+          data-toggle="collapse"
+          data-target=".bs-navbar-collapse"
+          onclick="showList()"
+        >
+          <span class="icon-bar"></span> <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
       </div>
-    </form>
-    <div id="listBox">
-      <ol id="userListBox">
-      </ol>
+      <ul id="messages"></ul>
+      <form>
+        <input type="file" id="file" />
+        <label id="paperclip" for="file"></label>
+        <div id="input-container">
+          <div id="thumbnail"></div>
+          <div id="close" onclick="deleteAtt()"></div>
+          <input id="m" autocomplete="off" autofocus />
+          <button id="btn"></button>
+        </div>
+      </form>
+      <div id="listBox">
+        <img src="/img/profilePicture.jpg" id="profile-pic" onclick="" />
+        <div id="user-info">
+          <div onclick="">Upload Picture</div>
+          <div onclick="">Delete Picture</div>
+        </div>
+        <br />
+        <ol id="userListBox" style="clear: left;"></ol>
+      </div>
     </div>
-  </div>
-  <script src="/js/socket.io-1.2.0.js"></script>
-  <script src="/js/jquery-3.3.1.min.js"></script>
-  <script src="/js/chatfunction.js"></script>
-  <script src="/js/filehandler.js"></script>
-</body>
-
+    <script src="/js/socket.io-1.2.0.js"></script>
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/chatfunction.js"></script>
+    <script src="/js/filehandler.js"></script>
+  </body>
 </html>

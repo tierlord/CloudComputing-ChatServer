@@ -43,7 +43,7 @@ function createMsgBubble(msg) {
   console.log(mood);
   var name = msg.sender;
   var time = msg.time;
-  var msg  = msg.text;
+  var msg = msg.text;
   if (name == usr) {
     var msgBubble =
       '<div class="bubble right animated"><div class="headright">';
@@ -51,8 +51,8 @@ function createMsgBubble(msg) {
     var msgBubble = '<div class="bubble animated"><div class="head">';
   }
   msgBubble += '<p class="name">' + name + "</p>";
-  if(mood == "happy") msgBubble += '<p class="mood">' + "🙂" + "</p>";
-  if(mood == "unhappy") msgBubble += '<p class="mood">' + "😡" + "</p>";
+  if (mood == "happy") msgBubble += '<p class="mood">' + "🙂" + "</p>";
+  if (mood == "unhappy") msgBubble += '<p class="mood">' + "😡" + "</p>";
   msgBubble += '<p class="timestamp">' + time + "</p></div>";
   msgBubble += '<p class="message">' + msg + "</p>";
   if (msg.file != null) {
@@ -214,18 +214,14 @@ $("form").submit(function() {
 // It only creates a bubble, if the messages comes from someone else.
 socket.on("chat message", function(msg) {
   if (msg.sender != usr) {
-    $("#messages").append(
-      createMsgBubble(msg)
-    );
+    $("#messages").append(createMsgBubble(msg));
     scrollDown();
   }
 });
 
 socket.on("private message", function(msg) {
   if (msg.sender != usr) {
-    $("#messages").append(
-      createMsgBubblePrivate(msg)
-    );
+    $("#messages").append(createMsgBubblePrivate(msg));
     scrollDown();
   }
 });
