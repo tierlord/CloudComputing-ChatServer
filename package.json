@@ -10,6 +10,7 @@
   "dependencies": {
     "https-post": "^0.1.1",
     "node-fetch": "^2.3.0",
+	"ibm_db": "^2.4.1",
     "socket.io": "^1.7.4"
   },
   "devDependencies": {
