@@ -9,7 +9,7 @@ const fetch = require('node-fetch');
 var io = require("socket.io")(http);
 var port = process.env.PORT || 3000;
 
-var dbConn = null;
+var dbString = "DATABASE=BLUDB;HOSTNAME=dashdb-txn-sbox-yp-lon02-01.services.eu-gb.bluemix.net;PORT=50001;PROTOCOL=TCPIP;UID=wwz36807;PWD=wb2fttzm+cgl8nwv;Security=SSL;"
 
 var userHandler = require("./userHandler");
 var dbHandler = require("./dbhandler");
@@ -89,6 +89,10 @@ io.on("connection", function(socket) {
       }
     }
   });
+
+  socket.on("login", function(loginData){
+    checkDbAccount(loginData.username, loginData.userpw, socket);
+  });
 });
 
 // Sends a list of usernames to all clients
@@ -119,7 +123,7 @@ function checkMood(msg){
 }
 
 function getDbUserByName(name, conn){
-  ibmdb.open("DATABASE=BLUDB;HOSTNAME=dashdb-txn-sbox-yp-lon02-01.services.eu-gb.bluemix.net;PORT=50001;PROTOCOL=TCPIP;UID=wwz36807;PWD=wb2fttzm+cgl8nwv;Security=SSL;", function (err,conn) {
+  ibmdb.open(dbString, function (err,conn) {
     if (err) return console.log(err);
     conn.query("select * from users where username = '" + name + "'", function (err, data) {
       if (err) console.log(err);
@@ -131,8 +135,26 @@ function getDbUserByName(name, conn){
   });
 }
 
+function checkDbAccount(name,password,sock){
+
+  ibmdb.open(dbString, function (err,conn) {
+    if (err) return console.log(err);
+    conn.query("select * from users where username = '" + name + "'", function (err, data) {
+      if (err) console.log(err);
+      console.log(data);
+      if (data[0].USERPW == password){
+        sock.emit("login", true, name);
+      } else {
+        sock.emit("login", false, name);
+      }
+    });
+    conn.close(function () {
+    });
+  });
+}
+
 function createDbUser(name, pw, pic, lasttime){
-  ibmdb.open("DATABASE=BLUDB;HOSTNAME=dashdb-txn-sbox-yp-lon02-01.services.eu-gb.bluemix.net;PORT=50001;PROTOCOL=TCPIP;UID=wwz36807;PWD=wb2fttzm+cgl8nwv;Security=SSL;", function (err,conn) {
+  ibmdb.open(dbString, function (err,conn) {
     if (err) return console.log(err);
     conn.query("insert into users values ('"+name+"', '"+pw+"', '"+pic+"', '"+lasttime+"');", function (err, data) {
       if (err) console.log(err);
@@ -145,7 +167,8 @@ function createDbUser(name, pw, pic, lasttime){
 // This is the command to start the server
 http.listen(port, function() {
   console.log("listening on *:" + port);
-  getDbUserByName("test");
+  //getDbUserByName("test");
+  //createDbUser("Lord", "lord", "pic", "24.11.2018");
 });
 
 setTimeout(broadcastList, 10000);

@@ -1,6 +1,8 @@
 // Alina Elena Aldea-Ionescu - 310194
 // Joffrey Schneider - 762380
 
+var socket = io();
+
 var loginEnabled = false;
 
 $(document).ready(function() {
@@ -20,22 +22,38 @@ $(document).ready(function() {
 });
 
 function login() {
-  var t = $("#textfield").val();
-  // Check if username is free
-  $.get("/user/" + t, function(data, status) {
-    console.log(data);
-    if (data == "used") {
-      alert("Sorry, username is already taken.");
-      location.pathname = "";
-    }
-    if (data == "free") {
-      // login with username
-      console.log("Logging in as " + t);
-      location.pathname = "";
-      location.href = "/chat/" + t;
-    }
-  });
+
+  var loginData = {
+    username : $('#textfield').val(),
+    userpw : $('#textfield2').val()
+  }
+
+  socket.emit("login", loginData);
+
+  // $.get("/user/" + t, function(data, status) {
+  //   console.log(data);
+  //   if (data == "used") {
+  //     alert("Sorry, username is already taken.");
+  //     location.pathname = "";
+  //   }
+  //   if (data == "free") {
+  //     // login with username
+  //     console.log("Logging in as " + t);
+  //     location.pathname = "";
+  //     location.href = "/chat/" + t;
+  //   }
+  // });
 }
+
+socket.on("login", function (correct, name){
+  if (correct) {
+    // login with username
+    console.log("Logging in as " + name);
+    location.pathname = "";
+    location.href = "/chat/" + name;
+  }
+  else alert("Wrong credentials!");
+});
 
 $("#btn-login").click(function(e) {
   e.preventDefault();
