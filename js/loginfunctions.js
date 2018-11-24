@@ -3,11 +3,12 @@
 
 var socket = io();
 
-var loginEnabled = false;
+var loginEnabled = true;
 
 $(document).ready(function() {
   var url = location.pathname;
   console.log(url);
+  $("#overlay").fadeOut();
   if (url.startsWith("/chat/")) {
     disableLogin();
     var name = url.substring(6);
@@ -29,23 +30,11 @@ function login() {
   }
 
   socket.emit("login", loginData);
-
-  // $.get("/user/" + t, function(data, status) {
-  //   console.log(data);
-  //   if (data == "used") {
-  //     alert("Sorry, username is already taken.");
-  //     location.pathname = "";
-  //   }
-  //   if (data == "free") {
-  //     // login with username
-  //     console.log("Logging in as " + t);
-  //     location.pathname = "";
-  //     location.href = "/chat/" + t;
-  //   }
-  // });
+  $("#overlay").fadeIn();
 }
 
 socket.on("login", function (correct, name){
+  $("#overlay").fadeOut();
   if (correct) {
     // login with username
     console.log("Logging in as " + name);
