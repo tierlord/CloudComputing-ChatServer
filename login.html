@@ -16,19 +16,32 @@ Joffrey Schneider - 762380 -->
 		<div id="pic"><img src="/img/letsChat.png" class="avatar"></div>
 		<p id="quote">Meet new people everyday without limits, make friendships around the world!</p>
 
+		<div id="uploaddiv">
+			<form id="uploadform">
+				<img id="profilepic">
+				<label>
+					<input id="file" type="file" size="50" accept="img/*"> 
+				</label> 
+				<input type="button" value="Okay" id="btn-okay">
+			</form>
+		</div>
+
 		<form id="form">
 			<p>Username</p>
 			<input id="textfield" type="text" name="" placeholder="Enter Username">
 
 			<p>Password</p>
 			<input id="textfield2" type="password" name="" placeholder="Enter Password">
+						
+			<div id = "message">Username not found in Database. Please register first!</div>
 
-			<input type="button" name="" value="Login" id="btn-login">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<input type="button" name="" value="Login" id="btn-login">
 			<input type="button" name="" value="Register" id="btn-register">
 		</form>
 	</div>
 	<script src="/js/socket.io-1.2.0.js"></script>
 	<script src="/js/jquery-3.3.1.min.js"></script>
+	<script src="/js/js.cookie.js"></script>
 	<script src="/js/loginfunctions.js"></script>
 </body>
 

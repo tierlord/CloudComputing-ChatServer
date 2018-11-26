@@ -26,26 +26,8 @@ app.get("/", function(req, res) {
 
 // This is where you enter the chatroom. If the requested username
 // is already in use, you will be redirected to the login page
-app.get("/chat/*", function(req, res) {
-  var name = req.params[0];
-  var valid = /^[0-9a-zA-Z\_]+$/; // Valid character check
-  if (userHandler.checkUsername(name) && name.match(valid)) {
-    userHandler.addUser(name);
-    res.sendFile(__dirname + "/index.html");
-  } else {
-    res.sendFile(__dirname + "/login.html");
-  }
-});
-
-// Check if a username is already in use
-app.get("/user/*", function(req, res) {
-  var name = req.params[0];
-  console.log("Check user: " + name);
-  if (userHandler.checkUsername(name)) {
-    res.send("free");
-  } else {
-    res.send("used");
-  }
+app.get("/chat/", function(req, res) {
+  res.sendFile(__dirname + "/index.html");
 });
 
 // A list of the connected sockets containing touples:
@@ -55,8 +37,8 @@ socketList = [];
 io.on("connection", function(socket) {
   // A hello event will be fired on connection. Here, the browser tells NodeJS
   // which username belongs to which socket
-  socket.on("hello", function(usrnm) {
-    socketList.push([socket, usrnm]);
+  socket.on("hello", function(usrnm, pw) {
+    checkDbAccount(usrnm, pw, socket);
   });
 
   socket.broadcast.emit("enter chat", userHandler.getLastUser());
@@ -92,6 +74,10 @@ io.on("connection", function(socket) {
 
   socket.on("login", function(loginData){
     checkDbAccount(loginData.username, loginData.userpw, socket);
+  });
+
+  socket.on("register", function(userData){
+    createDbUser(userData, socket);
   });
 });
 
@@ -136,16 +122,19 @@ function getDbUserByName(name, conn){
 }
 
 function checkDbAccount(name,password,sock){
-
   ibmdb.open(dbString, function (err,conn) {
     if (err) return console.log(err);
     conn.query("select * from users where username = '" + name + "'", function (err, data) {
       if (err) console.log(err);
-      console.log(data);
-      if (data[0].USERPW == password){
-        sock.emit("login", true, name);
+      var existing = (data.length != 0);
+      if (existing && data[0].USERPW == password){
+        sock.emit("login", true, name, password, data[0].PICTURE, existing);
+        socketList.push([sock, name]);
+        if(userHandler.checkUsername(name)){
+          userHandler.addUser(name);
+        }        
       } else {
-        sock.emit("login", false, name);
+        sock.emit("login", false, name, '', '', existing);
       }
     });
     conn.close(function () {
@@ -153,11 +142,17 @@ function checkDbAccount(name,password,sock){
   });
 }
 
-function createDbUser(name, pw, pic, lasttime){
+function createDbUser(data, sock){
   ibmdb.open(dbString, function (err,conn) {
     if (err) return console.log(err);
-    conn.query("insert into users values ('"+name+"', '"+pw+"', '"+pic+"', '"+lasttime+"');", function (err, data) {
-      if (err) console.log(err);
+    conn.query("insert into users values ('"+data.username+"', '"+data.userpw+"', ?, '"+data.lastlogin+"');", [data.userpic], function (err, data) {
+      if (err){
+        console.log(err);
+        sock.emit("register", false);
+      } else {
+        console.log(data);
+        sock.emit("register", true);
+      }      
     });
     conn.close(function () {
     });
@@ -171,4 +166,4 @@ http.listen(port, function() {
   //createDbUser("Lord", "lord", "pic", "24.11.2018");
 });
 
-setTimeout(broadcastList, 10000);
+setInterval(broadcastList, 5000);

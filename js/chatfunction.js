@@ -8,10 +8,13 @@ var attachedFile = null;
 
 // When entering the chatroom, the own username is transmitted through the socket
 $(document).ready(function() {
-  var path = window.location.pathname;
-  usr = path.replace("/chat/", "");
-  if (usr != "") {
-    socket.emit("hello", usr);
+  var cookie = Cookies.get("creds");  
+  if (cookie != null) {
+    cookie = cookie.split(":")
+    usr = cookie[0];
+    var pw = cookie[1];
+    console.log("Emitting hello " + usr + ": " + pw);
+    socket.emit("hello", usr, pw);
   } else {
     notRegistered();
   }
@@ -244,13 +247,22 @@ socket.on("user list", function(list) {
   console.log(userList);
 });
 
+socket.on("login", function(correct, name, pw, pic, existing){
+  if (!correct){
+    notRegistered();
+  } else {
+    $("#profile-pic").attr("src", pic);
+  }
+});
+
 // When you're not logged in, the textfield will not be functional
 function notRegistered() {
   console.log("You are a guest");
+  $("#profile").hide();
   $("#btn").hide();
   $("#m").prop("readonly", true);
   $("#m").css("color", "gray");
-  $("#m").val("You have to register first!");
+  $("#m").val("You have to login first!");
 }
 
 // Gets the current time in the format: "10:35"

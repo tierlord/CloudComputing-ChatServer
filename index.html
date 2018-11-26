@@ -46,17 +46,20 @@
         </div>
       </form>
       <div id="listBox">
-        <img src="/img/profilePicture.jpg" id="profile-pic" onclick="" />
-        <div id="user-info">
-          <div onclick="">Upload Picture</div>
-          <div onclick="">Delete Picture</div>
+        <div id="profile">
+          <img src="/img/profilePicture.jpg" id="profile-pic" onclick="" />
+          <div id="user-info">
+            <div onclick="">Upload Picture</div>
+            <div onclick="">Delete Picture</div>
+          </div>
+          <br />  
         </div>
-        <br />
         <ol id="userListBox" style="clear: left;"></ol>
       </div>
     </div>
     <script src="/js/socket.io-1.2.0.js"></script>
     <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/js.cookie.js"></script>
     <script src="/js/chatfunction.js"></script>
     <script src="/js/filehandler.js"></script>
   </body>
