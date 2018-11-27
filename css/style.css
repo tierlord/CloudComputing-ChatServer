@@ -397,3 +397,12 @@ input[type="file"] {
   float: right;
   font-family: monospace;
 }
+
+#upload-pic-btn {
+  height: 25px;
+  width: 100px;
+}
+#upload-pic-btn:hover {
+  background-size: 30px;
+  transition: background-size 0.5s;
+}

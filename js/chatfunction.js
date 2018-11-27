@@ -8,9 +8,9 @@ var attachedFile = null;
 
 // When entering the chatroom, the own username is transmitted through the socket
 $(document).ready(function() {
-  var cookie = Cookies.get("creds");  
+  var cookie = Cookies.get("creds");
   if (cookie != null) {
-    cookie = cookie.split(":")
+    cookie = cookie.split(":");
     usr = cookie[0];
     var pw = cookie[1];
     console.log("Emitting hello " + usr + ": " + pw);
@@ -247,8 +247,8 @@ socket.on("user list", function(list) {
   console.log(userList);
 });
 
-socket.on("login", function(correct, name, pw, pic, existing){
-  if (!correct){
+socket.on("login", function(correct, name, pw, pic, existing) {
+  if (!correct) {
     notRegistered();
   } else {
     $("#profile-pic").attr("src", pic);
@@ -316,4 +316,22 @@ function addPrivate(name) {
 
 function scrollDown() {
   window.scrollTo(0, document.body.scrollHeight);
+}
+
+$("#upload-pic-btn")[0].onclick = null;
+
+function uploadPicture(e) {
+  var input = event.target;
+
+  var reader = new FileReader();
+  reader.onload = function() {
+    var dataURL = reader.result;
+    var output = document.getElementById("profile-pic");
+    output.src = dataURL;
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function deletePicture() {
+  $("#profile-pic").attr("src", "/img/profilePicture.jpg");
 }

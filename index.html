@@ -49,10 +49,15 @@
         <div id="profile">
           <img src="/img/Spinner-1s-200px.apng" id="profile-pic" onclick="" />
           <div id="user-info">
-            <div onclick="">Upload Picture</div>
-            <div onclick="">Delete Picture</div>
+            <input
+              type="file"
+              accept="image/*"
+              onchange="uploadPicture(event)"
+              id="upload-pic-btn"
+            />
+            <div onclick="deletePicture()">Delete Picture</div>
           </div>
-          <br />  
+          <br />
         </div>
         <ol id="userListBox" style="clear: left;"></ol>
       </div>
