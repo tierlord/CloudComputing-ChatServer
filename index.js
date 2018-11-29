@@ -4,6 +4,7 @@
 var ibmdb = require("ibm_db");
 var express = require("express");
 var app = express();
+var request = require("request");
 var http = require("http").Server(app);
 const fetch = require('node-fetch');
 var io = require("socket.io")(http);
@@ -162,8 +163,31 @@ function createDbUser(data, sock){
 // This is the command to start the server
 http.listen(port, function() {
   console.log("listening on *:" + port);
-  //getDbUserByName("test");
-  //createDbUser("Lord", "lord", "pic", "24.11.2018");
+  
+  var options = {
+    "method": "POST",
+    "url": "https://gateway.watsonplatform.net/visual-recognition/api/v3/detect_faces?url=https://watson-developer-cloud.github.io/doc-tutorial-downloads/visual-recognition/",
+    "headers": {
+      "authorization": "ApiKey apikey:7K6tDf8rFWkIMz_pcG5QZcTtKM6donGDTsT1QSKhqcoT",
+      "accept": "text/json",
+      "cache-control": "no-cache",
+    }
+  };
+  
+  var req = http.request(options, function (res) {
+    var chunks = [];
+  
+    res.on("data", function (chunk) {
+      chunks.push(chunk);
+    });
+  
+    res.on("end", function () {
+      var body = Buffer.concat(chunks);
+      console.log(body.toString());
+    });
+  });
+  
+  req.end();
 });
 
 setInterval(broadcastList, 5000);
