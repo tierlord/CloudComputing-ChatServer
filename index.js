@@ -4,13 +4,14 @@
 var ibmdb = require("ibm_db");
 var express = require("express");
 var app = express();
-var request = require("request");
+// var request = require("request");
 var http = require("http").Server(app);
-const fetch = require('node-fetch');
+const fetch = require("node-fetch");
 var io = require("socket.io")(http);
 var port = process.env.PORT || 3000;
 
-var dbString = "DATABASE=BLUDB;HOSTNAME=dashdb-txn-sbox-yp-lon02-01.services.eu-gb.bluemix.net;PORT=50001;PROTOCOL=TCPIP;UID=wwz36807;PWD=wb2fttzm+cgl8nwv;Security=SSL;"
+var dbString =
+  "DATABASE=BLUDB;HOSTNAME=dashdb-txn-sbox-yp-lon02-01.services.eu-gb.bluemix.net;PORT=50001;PROTOCOL=TCPIP;UID=wwz36807;PWD=wb2fttzm+cgl8nwv;Security=SSL;";
 
 var userHandler = require("./userHandler");
 var dbHandler = require("./dbhandler");
@@ -73,11 +74,11 @@ io.on("connection", function(socket) {
     }
   });
 
-  socket.on("login", function(loginData){
+  socket.on("login", function(loginData) {
     checkDbAccount(loginData.username, loginData.userpw, socket);
   });
 
-  socket.on("register", function(userData){
+  socket.on("register", function(userData) {
     createDbUser(userData, socket);
   });
 });
@@ -88,106 +89,130 @@ function broadcastList() {
   io.emit("user list", userList);
 }
 
-function checkMood(msg){
+function checkMood(msg) {
   var url = "https://ccchattone.eu-gb.mybluemix.net/tone";
   var data = JSON.stringify({ texts: [msg.text] });
 
   fetch(url, {
-      method: 'post',
-      body:    data,
-      headers: {'Content-Type': 'application/json',
-                  'mode': 'cors'},
+    method: "post",
+    body: data,
+    headers: { "Content-Type": "application/json", mode: "cors" }
   })
-  .then(res => res.json())
-  .then(function(json) {
-    //msg.mood = JSON.parse(json).mood;
-    var mood = json.mood;
-    console.log("Mood: " + mood);
-    if(mood == "happy") msg.mood = "happy";
-    if(mood == "unhappy") msg.mood = "unhappy";
-    io.emit('chat message', msg);
-  });
+    .then(res => res.json())
+    .then(function(json) {
+      //msg.mood = JSON.parse(json).mood;
+      var mood = json.mood;
+      console.log("Mood: " + mood);
+      if (mood == "happy") msg.mood = "happy";
+      if (mood == "unhappy") msg.mood = "unhappy";
+      io.emit("chat message", msg);
+    });
 }
 
-function getDbUserByName(name, conn){
-  ibmdb.open(dbString, function (err,conn) {
+function getDbUserByName(name, conn) {
+  ibmdb.open(dbString, function(err, conn) {
     if (err) return console.log(err);
-    conn.query("select * from users where username = '" + name + "'", function (err, data) {
+    conn.query("select * from users where username = '" + name + "'", function(
+      err,
+      data
+    ) {
       if (err) console.log(err);
       else console.log(data[0].USERNAME);
     });
-    conn.close(function () {
-      console.log('DB connection closed');
+    conn.close(function() {
+      console.log("DB connection closed");
     });
   });
 }
 
-function checkDbAccount(name,password,sock){
-  ibmdb.open(dbString, function (err,conn) {
+function checkDbAccount(name, password, sock) {
+  ibmdb.open(dbString, function(err, conn) {
     if (err) return console.log(err);
-    conn.query("select * from users where username = '" + name + "'", function (err, data) {
+    conn.query("select * from users where username = '" + name + "'", function(
+      err,
+      data
+    ) {
       if (err) console.log(err);
-      var existing = (data.length != 0);
-      if (existing && data[0].USERPW == password){
+      var existing = data.length != 0;
+      if (existing && data[0].USERPW == password) {
         sock.emit("login", true, name, password, data[0].PICTURE, existing);
         socketList.push([sock, name]);
-        if(userHandler.checkUsername(name)){
+        if (userHandler.checkUsername(name)) {
           userHandler.addUser(name);
-        }        
+        }
       } else {
-        sock.emit("login", false, name, '', '', existing);
+        sock.emit("login", false, name, "", "", existing);
       }
     });
-    conn.close(function () {
-    });
+    conn.close(function() {});
   });
 }
 
-function createDbUser(data, sock){
-  ibmdb.open(dbString, function (err,conn) {
+function createDbUser(data, sock) {
+  ibmdb.open(dbString, function(err, conn) {
     if (err) return console.log(err);
-    conn.query("insert into users values ('"+data.username+"', '"+data.userpw+"', ?, '"+data.lastlogin+"');", [data.userpic], function (err, data) {
-      if (err){
-        console.log(err);
-        sock.emit("register", false);
-      } else {
-        console.log(data);
-        sock.emit("register", true);
-      }      
-    });
-    conn.close(function () {
-    });
+    conn.query(
+      "insert into users values ('" +
+        data.username +
+        "', '" +
+        data.userpw +
+        "', ?, '" +
+        data.lastlogin +
+        "');",
+      [data.userpic],
+      function(err, data) {
+        if (err) {
+          console.log(err);
+          sock.emit("register", false);
+        } else {
+          console.log(data);
+          sock.emit("register", true);
+        }
+      }
+    );
+    conn.close(function() {});
   });
 }
 
 // This is the command to start the server
 http.listen(port, function() {
   console.log("listening on *:" + port);
-  
+
   var options = {
-    "method": "POST",
-    "url": "https://gateway.watsonplatform.net/visual-recognition/api/v3/detect_faces?url=https://watson-developer-cloud.github.io/doc-tutorial-downloads/visual-recognition/",
-    "headers": {
-      "authorization": "ApiKey apikey:7K6tDf8rFWkIMz_pcG5QZcTtKM6donGDTsT1QSKhqcoT",
-      "accept": "text/json",
-      "cache-control": "no-cache",
+    method: "POST",
+    url:
+      "https://gateway.watsonplatform.net/visual-recognition/api/v3/detect_faces?url=https://watson-developer-cloud.github.io/doc-tutorial-downloads/visual-recognition/",
+    headers: {
+      authorization:
+        "ApiKey apikey:7K6tDf8rFWkIMz_pcG5QZcTtKM6donGDTsT1QSKhqcoT",
+      accept: "text/json",
+      "cache-control": "no-cache"
     }
   };
-  
-  var req = http.request(options, function (res) {
-    var chunks = [];
-  
-    res.on("data", function (chunk) {
-      chunks.push(chunk);
-    });
-  
-    res.on("end", function () {
-      var body = Buffer.concat(chunks);
-      console.log(body.toString());
-    });
-  });
-  
-  req.end();
+
+  // var req = http.request(options, function(res) {
+  //   var chunks = [];
+
+  //   res.on("data", function(chunk) {
+  //     chunks.push(chunk);
+  //   });
+
+  //   res.on("end", function() {
+  //     var body = Buffer.concat(chunks);
+  //     console.log(body.toString());
+  //   });
+  // });
+
+  // req.end();
 });
 
 setInterval(broadcastList, 5000);
+
+function requireHTTPS(req, res, next) {
+  if (req.headers && req.headers.$wssp === "80") {
+    return res.redirect("https://" + req.get("host") + req.url);
+  }
+  next();
+}
+
+app.use(requireHTTPS);
