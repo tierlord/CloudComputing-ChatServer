@@ -49,13 +49,14 @@
         <div id="profile">
           <img src="/img/Spinner-1s-200px.apng" id="profile-pic" onclick="" />
           <div id="user-info">
+            <label id="updatePic" for="upload-pic-btn">Update Picture</label>
             <input
               type="file"
               accept="image/*"
               onchange="uploadPicture(event)"
               id="upload-pic-btn"
             />
-            <div onclick="deletePicture()">Delete Picture</div>
+            <div id="logout-btn" onclick="logout()">Log out</div>
           </div>
           <br />
         </div>

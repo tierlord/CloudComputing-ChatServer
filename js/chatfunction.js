@@ -263,6 +263,9 @@ function notRegistered() {
   $("#m").prop("readonly", true);
   $("#m").css("color", "gray");
   $("#m").val("You have to login first!");
+  $("#m").on("click", function(){
+    location.href = "/";
+  });
 }
 
 // Gets the current time in the format: "10:35"
@@ -325,13 +328,14 @@ function uploadPicture(e) {
 
   var reader = new FileReader();
   reader.onload = function() {
-    var dataURL = reader.result;
     var output = document.getElementById("profile-pic");
-    output.src = dataURL;
+    output.src = reader.result;
+    socket.emit("update picture", reader.result, usr);
   };
   reader.readAsDataURL(input.files[0]);
 }
 
-function deletePicture() {
-  $("#profile-pic").attr("src", "/img/profilePicture.jpg");
+function logout() {
+  Cookies.remove('creds');
+  location.href = "/";
 }

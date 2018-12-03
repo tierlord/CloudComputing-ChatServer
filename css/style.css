@@ -89,6 +89,26 @@ body {
   transform: rotate(15deg);
 }
 
+#upload-pic-btn {
+  position: absolute;
+}
+
+#updatePic {
+  cursor: pointer;
+}
+
+#updatePic:hover {
+  color: blue;
+}
+
+#logout-btn {
+  cursor: pointer;
+}
+
+#logout-btn:hover {
+  color: blue;
+}
+
 #thumbnail {
   width: 34px;
   height: 34px;
@@ -348,6 +368,8 @@ i {
 /*Get rid of "No file chosen" text*/
 input[type="file"] {
   color: transparent;
+  height: 0;
+  width: 0;
 }
 
 @keyframes slide-up {
@@ -390,19 +412,11 @@ input[type="file"] {
   border-radius: 50%;
   padding: 10px 10px 10px 10px;
   float: left;
+  cursor: pointer;
 }
 
 #user-info {
   padding: 37px 15px 0px 4px;
   float: right;
   font-family: monospace;
-}
-
-#upload-pic-btn {
-  height: 25px;
-  width: 100px;
-}
-#upload-pic-btn:hover {
-  background-size: 30px;
-  transition: background-size 0.5s;
 }
