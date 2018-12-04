@@ -4,10 +4,13 @@ Joffrey Schneider - 762380 */
 body {
   margin: 0;
   padding: 0;
-  background: url(/img/bg1.jpg);
-  background-size: cover;
-  background-position: center;
   font-family: sans-serif;
+
+  background: url(/img/bg1.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
 
 #overlay {

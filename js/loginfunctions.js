@@ -59,12 +59,29 @@ socket.on("login", function (correct, name, pw, pic, existing){
   }
 });
 
+socket.on("user available", function(free){
+  $("#overlay").fadeOut();
+  if(free){
+    $("#form").hide();
+    $("#uploaddiv").fadeIn();
+  } else {
+    alert("Username is already registered!");
+  }
+});
+
 socket.on("register", function(okay){
   $("#overlay").fadeOut();
   $("#uploaddiv").hide();
   $("#message").hide();
   $("#form").fadeIn();
   if(!okay) alert("Error");
+});
+
+socket.on("face checked", function(passed){
+  $("#overlay").fadeOut();
+  if(passed){
+    $("#btn-okay").show();
+  } else alert("Sorry, no face detected.");
 });
 
 $("#btn-login").click(function(e) {
@@ -78,8 +95,11 @@ $("#btn-login").click(function(e) {
 });
 
 $("#btn-register").click(function(e) {
-  $("#form").hide();
-  $("#uploaddiv").fadeIn();
+  if(!loginEnabled){
+    return false;
+  }
+  socket.emit("check user available", $("#textfield").val());
+  $("#overlay").fadeIn();
 });
 
 $("#textfield").on("input", function() {
@@ -118,8 +138,9 @@ $("#file").on("change", function(e){
   reader.onload = (function(){
     pic = reader.result;
     console.log("Picture uploaded." + pic);
+    socket.emit("check face", pic);
     $("#profilepic").attr("src", pic);
-    $("#btn-okay").show();
+    $("#overlay").fadeIn();
   });
   reader.readAsDataURL(e.target.files[0]);
 });
