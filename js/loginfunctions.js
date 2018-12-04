@@ -81,7 +81,9 @@ socket.on("face checked", function(passed){
   $("#overlay").fadeOut();
   if(passed){
     $("#btn-okay").show();
-  } else alert("Sorry, no face detected.");
+  } else {
+    alert("Sorry, no face detected.");
+  }
 });
 
 $("#btn-login").click(function(e) {
@@ -134,6 +136,7 @@ $("#btn-okay").on("click", function(){
 });
 
 $("#file").on("change", function(e){
+  $("#btn-okay").hide();
   var reader = new FileReader();
   reader.onload = (function(){
     pic = reader.result;
