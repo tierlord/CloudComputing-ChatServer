@@ -92,11 +92,11 @@ io.on("connection", function(socket) {
   })
 
   socket.on("check face", function(pictureUrl){
-    checkFace(pictureUrl, socket);
+    checkFace(pictureUrl, socket, false);
   });
 
-  socket.on("update picture", function(pic, name){
-    changeDbPic(pic, name, socket);
+  socket.on("change picture", function(pictureUrl, name){
+    checkFace(pictureUrl, socket, true, name);
   });
 });
 
@@ -182,16 +182,14 @@ function createDbUser(data, sock){
   });
 }
 
-function changeDbPic(pic, name, sock){
+function changeDbPic(pic, name){
   ibmdb.open(dbString, function (err,conn) {
     if (err) return console.log(err);
     conn.query("UPDATE USERS SET PICTURE = ? WHERE USERNAME = '"+name+ "'", [pic], function (err, data) {
       if (err){
         console.log(err);
-        sock.emit("register", false);
       } else {
         console.log(data);
-        sock.emit("register", true);
       }      
     });
     conn.close(function () {
@@ -199,7 +197,10 @@ function changeDbPic(pic, name, sock){
   });
 }
 
-function checkFace(dataUri, socket){
+function checkFace(dataUri, socket, update, name){
+  console.log("Face detection started...");
+  var originalData = dataUri;
+  
   dataUri = {
     type: dataUri.substr(0,dataUri.indexOf(",")),
     data: dataUri.substr(dataUri.indexOf(","))
@@ -236,13 +237,19 @@ function checkFace(dataUri, socket){
         if (err) {
           console.log(err);
         } else {
+
           var faces = res.images[0].faces.length;
           console.log("Faces detected: " + faces);
           var passed = (faces > 0);
-          socket.emit("face checked", passed);
+          
+          if(update){
+            if(passed) changeDbPic(originalData, name);
+            socket.emit("change pic", passed, originalData);
+          } else {
+            socket.emit("face checked", passed);
+          }          
         }
       });
-
       return true;
     }
   });

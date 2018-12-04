@@ -255,6 +255,14 @@ socket.on("login", function(correct, name, pw, pic, existing) {
   }
 });
 
+socket.on("change pic", function(passed, uri){
+  console.log("Change pic received from socket");
+  if(passed){
+    var thumb = document.getElementById("profile-pic");
+    thumb.src = uri
+  } else alert("No face detected!");
+});
+
 // When you're not logged in, the textfield will not be functional
 function notRegistered() {
   console.log("You are a guest");
@@ -321,19 +329,17 @@ function scrollDown() {
   window.scrollTo(0, document.body.scrollHeight);
 }
 
-$("#upload-pic-btn")[0].onclick = null;
-
-function uploadPicture(e) {
-  var input = event.target;
+$("#upload-pic-btn").on("change", function(e){
+  console.log("Profile pic change");
 
   var reader = new FileReader();
   reader.onload = function() {
     var output = document.getElementById("profile-pic");
     output.src = reader.result;
-    socket.emit("update picture", reader.result, usr);
+    socket.emit("change picture", reader.result, usr);
   };
-  reader.readAsDataURL(input.files[0]);
-}
+  reader.readAsDataURL(e.target.files[0]);
+});
 
 function logout() {
   Cookies.remove('creds');
