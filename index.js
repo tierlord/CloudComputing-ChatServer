@@ -199,13 +199,6 @@ function changeDbPic(pic, name, sock){
   });
 }
 
-// This is the command to start the server
-http.listen(port, function() {
-
-  console.log("listening on *:" + port);
-
-});
-
 function checkFace(dataUri, socket){
   dataUri = {
     type: dataUri.substr(0,dataUri.indexOf(",")),
@@ -253,7 +246,24 @@ function checkFace(dataUri, socket){
       return true;
     }
   });
-
 }
+
+function requireHTTPS(req, res, next) {
+  if (req.headers && req.headers.$wssp === "80") {
+    return res.redirect("https://" + req.get("host") + req.url);
+  }
+  next();
+}
+
+app.use(requireHTTPS);
+
+// This is the command to start the server
+http.listen(port, function() {
+
+  console.log("listening on *:" + port);
+
+});
+
+
 
 setInterval(broadcastList, 5000);
