@@ -252,7 +252,6 @@ socket.on("exit chat", function(username) {
 socket.on("user list", function(list) {
   userList = list;
   updateList();
-  console.log(userList.name);
 });
 
 socket.on("login", function(correct, name, pw, pic, existing) {

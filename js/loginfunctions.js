@@ -34,9 +34,8 @@ function hash(s){
 function login() {
   var loginData = {
     username : $('#textfield').val(),
-    userpw : $('#textfield2').val()
+    userpw : hash($('#textfield2').val())
   }
-  console.log("Login: " + loginData.username + ':' + loginData.userpw);
   socket.emit("login", loginData);
   $("#overlay").fadeIn();
 }
@@ -125,7 +124,7 @@ $("#textfield2").on("input", function() {
 $("#btn-okay").on("click", function(){
   var userData = {
     username: $("#textfield").val(),
-    userpw: $("#textfield2").val(),
+    userpw: hash($("#textfield2").val()),
     userpic: pic,
     lastlogin: "26.11.2018"
   };

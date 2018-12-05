@@ -126,6 +126,12 @@ body {
   box-shadow: 0 0 5px grey;
 }
 
+.smallpic:hover {
+  max-height: 40px;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+}
+
 #btn {
   background-image: url(../img/sendicon.png);
   background-size: 20px;
