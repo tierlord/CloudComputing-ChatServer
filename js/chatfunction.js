@@ -88,7 +88,13 @@ function createMsgBubble(msg) {
   return msgBubble;
 }
 
-function createMsgBubblePrivate(name, time, msg, recipient, file) {
+function createMsgBubblePrivate(msg) {
+  var mood = msg.mood;
+  var name = msg.sender;
+  var recipient = msg.recipient;
+  var time = msg.time;
+  var msg = msg.text;
+
   if (name == usr) {
     var msgBubble =
       '<div class="bubble right animated"><div class="headright">';
@@ -99,7 +105,8 @@ function createMsgBubblePrivate(name, time, msg, recipient, file) {
   }
   msgBubble += '<p class="timestamp">' + time + "</p></div>";
   msgBubble += '<p class="message"><xmp>' + msg + "</xmp></p>";
-  if (file != null) {
+  if (msg.file != null) {
+    var file = msg.file;
     var type = mimeTypeOf(file);
     if (type.startsWith("image")) {
       msgBubble += '<a href="' + file + '" download="' + type + '">';
@@ -181,7 +188,8 @@ $("form").submit(function() {
     var spaceIndex = msgtext.indexOf(" ");
     if (spaceIndex != -1) {
       var recp = msgtext.substring(1, spaceIndex);
-      if (userList.indexOf(recp) > -1) msg.recipient = recp;
+      var existing = userList.some(function(a){return a.name===recp});
+      if (existing) msg.recipient = recp;
       else {
         alert("There is no user called " + recp);
         return false;
@@ -244,7 +252,7 @@ socket.on("exit chat", function(username) {
 socket.on("user list", function(list) {
   userList = list;
   updateList();
-  console.log(userList);
+  console.log(userList.name);
 });
 
 socket.on("login", function(correct, name, pw, pic, existing) {
@@ -289,22 +297,27 @@ function getTime() {
 function updateList() {
   console.log("Update Userlist, length: " + userList.length);
   var list = $("#userListBox");
+  var templist = [];
 
   list.empty();
   for (var i = 0; i < userList.length; i++) {
-    var usnm = userList[i];
+    var usnm = userList[i].name;
     if (usnm == usr) {
       // Own user
       list.append('<li class="listItem ownusr">' + usnm + "</li>");
     } else {
-      list.append(
+      templist.push(
         '<li class="listItem" onclick="addPrivate(\'' +
           usnm +
           "')\">" +
+          "<img class='smallpic' src='" + userList[i].picture + "'/>" +
           usnm +
           "</li>"
       );
     }
+  }
+  for(var i=0; i<templist.length; i++){
+    list.append(templist[i]);
   }
 }
 

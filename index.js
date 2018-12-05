@@ -48,7 +48,6 @@ io.on("connection", function(socket) {
     checkDbAccount(usrnm, pw, socket);
   });
 
-  socket.broadcast.emit("enter chat", userHandler.getLastUser());
   broadcastList();
 
   // On disconnect, the user will be removed from socketList and userList
@@ -154,7 +153,8 @@ function checkDbAccount(name,password,sock){
         sock.emit("login", true, name, password, data[0].PICTURE, existing);
         socketList.push([sock, name]);
         if(userHandler.checkUsername(name)){
-          userHandler.addUser(name);
+          userHandler.addUser(name, data[0].PICTURE);
+          sock.broadcast.emit("enter chat", userHandler.getLastUser());
         }        
       } else {
         sock.emit("login", false, name, '', '', existing);

@@ -119,6 +119,13 @@ body {
   flex-shrink: 0;
 }
 
+.smallpic {
+  max-height: 25px;
+  border-radius: 2px;
+  margin: -5px 6px -8px -3px;
+  box-shadow: 0 0 5px grey;
+}
+
 #btn {
   background-image: url(../img/sendicon.png);
   background-size: 20px;

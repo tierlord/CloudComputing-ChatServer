@@ -4,15 +4,19 @@
 var userList = [];
 
 var methods = {
-    addUser: function(name){
-        if(name == ''){
+    addUser: function(username, pic){
+        if(username == ''){
             console.log("Username can't be empty!");
             return false;
         }
-        userList.push(name);
-        console.log(name + " added");
+        var usr = {
+            name: username,
+            picture: pic
+        }
+        userList.push(usr);
+        console.log(usr.name + " added");
         userList.sort(function(a, b){
-            var nameA=a.toLowerCase(), nameB=b.toLowerCase();
+            var nameA=a.name.toLowerCase(), nameB=b.name.toLowerCase();
             if (nameA < nameB) //sort string ascending
              return -1;
             if (nameA > nameB)
@@ -23,10 +27,15 @@ var methods = {
     },
 
     removeUser: function(name){
-        var index = userList.indexOf(name);
-        if(index > -1){
+        var index = -1;
+        for(var i; i < userList.length; i++){
+            if(userList[i].name == name){
+                index = i;
+            }
+        }
+        if(index >= 0){
             userList.splice(index, 1);
-            //console.log(name + " removed");
+            console.log(name + " removed");
             return true;
         } else {
             return false;
@@ -38,12 +47,14 @@ var methods = {
     },
 
     getLastUser: function(){
-        return userList[userList.length-1];
+        if(userList.length > 0) {
+            return userList[userList.length-1].name;
+        } else return [];        
     },
 
     checkUsername: function(name){
         for (var i = 0; i < userList.length; i++){
-            if(name == userList[i]){
+            if(name == userList[i].name){
                 return false;
             }
         }
