@@ -57,7 +57,7 @@ function createMsgBubble(msg) {
   if (mood == "happy") msgBubble += '<p class="mood">' + "🙂" + "</p>";
   if (mood == "unhappy") msgBubble += '<p class="mood">' + "😡" + "</p>";
   msgBubble += '<p class="timestamp">' + time + "</p></div>";
-  msgBubble += '<p class="message">' + msg + "</p>";
+  msgBubble += '<p class="message"><xmp>' + msg + "</xmp></p>";
   if (msg.file != null) {
     var type = mimeTypeOf(msg.file);
     if (type.startsWith("image")) {
@@ -98,7 +98,7 @@ function createMsgBubblePrivate(name, time, msg, recipient, file) {
     msgBubble += '<p class="name">' + "<i></i> Private from: " + name + "</p>";
   }
   msgBubble += '<p class="timestamp">' + time + "</p></div>";
-  msgBubble += '<p class="message">' + msg + "</p>";
+  msgBubble += '<p class="message"><xmp>' + msg + "</xmp></p>";
   if (file != null) {
     var type = mimeTypeOf(file);
     if (type.startsWith("image")) {
@@ -256,7 +256,7 @@ socket.on("login", function(correct, name, pw, pic, existing) {
 });
 
 socket.on("change pic", function(passed, uri){
-  console.log("Change pic received from socket");
+  console.log("Change pic received from socket. Status: " + passed);
   if(passed){
     var thumb = document.getElementById("profile-pic");
     thumb.src = uri
@@ -334,8 +334,6 @@ $("#upload-pic-btn").on("change", function(e){
 
   var reader = new FileReader();
   reader.onload = function() {
-    var output = document.getElementById("profile-pic");
-    output.src = reader.result;
     socket.emit("change picture", reader.result, usr);
   };
   reader.readAsDataURL(e.target.files[0]);
