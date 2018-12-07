@@ -10,11 +10,18 @@ var path = require("path");
 
 app.use(express.static("res"));
 
-app.use(
-  helmet.hsts({
-    maxAge: 5184000
-  })
-);
+app.use(helmet());
+
+// app.use(
+//   //Helmet’s csp module helps set Content Security Policies.
+//   helmet.contentSecurityPolicy({
+//     directives: {
+//       defaultSrc: ["'self'"],
+//       styleSrc: ["'self'", "maxcdn.bootstrapcdn.com"]
+//     }
+//   })
+// );
+
 var VisualRecognitionV3 = require("watson-developer-cloud/visual-recognition/v3"); // watson sdk
 var http = require("http").Server(app);
 const fetch = require("node-fetch");
@@ -31,6 +38,14 @@ var dbHandler = require("./dbhandler");
 app.use("/js", express.static("js"));
 app.use("/css", express.static("css"));
 app.use("/img", express.static("img"));
+
+// app.use(function(req, res, next) {
+//   res.setHeader(
+//     "Content-Security-Policy",
+//     "script-src 'self' https://apis.google.com"
+//   );
+//   return next();
+// });
 
 // A new user will first get to the login page
 app.get("/", function(req, res) {
