@@ -12,15 +12,15 @@ app.use(express.static("res"));
 
 app.use(helmet());
 
-// app.use(
-//   //Helmet’s csp module helps set Content Security Policies.
-//   helmet.contentSecurityPolicy({
-//     directives: {
-//       defaultSrc: ["'self'"],
-//       styleSrc: ["'self'", "maxcdn.bootstrapcdn.com"]
-//     }
-//   })
-// );
+app.use(
+  //Helmet’s csp module helps set Content Security Policies.
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "maxcdn.bootstrapcdn.com"]
+    }
+  })
+);
 
 var VisualRecognitionV3 = require("watson-developer-cloud/visual-recognition/v3"); // watson sdk
 var http = require("http").Server(app);
