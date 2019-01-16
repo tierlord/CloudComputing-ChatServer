@@ -43,10 +43,9 @@ $(document).ready(function() {
 
 function createMsgBubble(msg) {
   var mood = msg.mood;
-  console.log(mood);
   var name = msg.sender;
   var time = msg.time;
-  var msg = msg.text;
+  var text = msg.text;
   if (name == usr) {
     var msgBubble =
       '<div class="bubble right animated"><div class="headright">';
@@ -57,8 +56,9 @@ function createMsgBubble(msg) {
   if (mood == "happy") msgBubble += '<p class="mood">' + "🙂" + "</p>";
   if (mood == "unhappy") msgBubble += '<p class="mood">' + "😡" + "</p>";
   msgBubble += '<p class="timestamp">' + time + "</p></div>";
-  msgBubble += '<p class="message"><xmp>' + msg + "</xmp></p>";
+  msgBubble += '<p class="message"><xmp>' + text + "</xmp></p>";
   if (msg.file != null) {
+    console.log("File attached!");
     var type = mimeTypeOf(msg.file);
     if (type.startsWith("image")) {
       msgBubble += '<a href="' + msg.file + '" download="' + type + '">';
@@ -93,7 +93,7 @@ function createMsgBubblePrivate(msg) {
   var name = msg.sender;
   var recipient = msg.recipient;
   var time = msg.time;
-  var msg = msg.text;
+  var text = msg.text;
 
   if (name == usr) {
     var msgBubble =
@@ -104,7 +104,7 @@ function createMsgBubblePrivate(msg) {
     msgBubble += '<p class="name">' + "<i></i> Private from: " + name + "</p>";
   }
   msgBubble += '<p class="timestamp">' + time + "</p></div>";
-  msgBubble += '<p class="message"><xmp>' + msg + "</xmp></p>";
+  msgBubble += '<p class="message"><xmp>' + text + "</xmp></p>";
   if (msg.file != null) {
     var file = msg.file;
     var type = mimeTypeOf(file);
@@ -198,13 +198,7 @@ $("form").submit(function() {
       if (msg.text == "" && msg.file == null) return false;
       socket.emit("private message", msg);
       $("#messages").append(
-        createMsgBubblePrivate(
-          usr,
-          getTime(),
-          msg.text,
-          msg.recipient,
-          msg.file
-        )
+        createMsgBubblePrivate(msg)
       );
     } else return false; // When there is no message
 

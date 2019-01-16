@@ -5,30 +5,10 @@ var ibmdb = require("ibm_db");
 var express = require("express");
 var app = express();
 var helmet = require("helmet");
-var fs = require("fs");
-var path = require("path");
-
-// app.use(express.static("res"));
-
-app.use(
-  helmet.hsts({
-    maxAge: 5184000
-  })
-);
-
-// app.use(
-//   //Helmet’s csp module helps set Content Security Policies.
-//   helmet.contentSecurityPolicy({
-//     directives: {
-//       defaultSrc: ["'self'"],
-//       styleSrc: ["'self'", "maxcdn.bootstrapcdn.com"]
-//     }
-//   })
-// );
-
+var bcyrpt = require("bcrypt");
+var fetch = require("node-fetch");
 var VisualRecognitionV3 = require("watson-developer-cloud/visual-recognition/v3"); // watson sdk
 var http = require("http").Server(app);
-const fetch = require("node-fetch");
 var io = require("socket.io")(http);
 var port = process.env.PORT || 3000;
 
@@ -36,7 +16,6 @@ var dbString =
   "DATABASE=BLUDB;HOSTNAME=dashdb-txn-sbox-yp-lon02-01.services.eu-gb.bluemix.net;PORT=50001;PROTOCOL=TCPIP;UID=wwz36807;PWD=wb2fttzm+cgl8nwv;Security=SSL";
 
 var userHandler = require("./userHandler");
-var dbHandler = require("./dbhandler");
 
 // This is to serve static files to the client
 app.use("/js", express.static("js"));
@@ -145,10 +124,7 @@ function checkMood(msg) {
 function getDbUserByName(name, sock) {
   ibmdb.open(dbString, function(err, conn) {
     if (err) return console.log(err);
-    conn.query("SELECT * FROM users where username = '" + name + "'", function(
-      err,
-      data
-    ) {
+    conn.query("SELECT * FROM users where username = '" + name + "'", function(err,data){
       if (err) console.log(err);
       else {
         console.log("Users found: " + data.length);
@@ -165,50 +141,59 @@ function getDbUserByName(name, sock) {
 function checkDbAccount(name, password, sock) {
   ibmdb.open(dbString, function(err, conn) {
     if (err) return console.log(err);
-    conn.query("SELECT * FROM users where username = '" + name + "'", function(
-      err,
-      data
-    ) {
+    conn.query("SELECT * FROM users where username = '" + name + "'", function(err,data) {
       if (err) console.log(err);
       var existing = data.length != 0;
-      if (existing && data[0].USERPW == password) {
-        sock.emit("login", true, name, password, data[0].PICTURE, existing);
-        socketList.push([sock, name]);
-        if (userHandler.checkUsername(name)) {
-          userHandler.addUser(name, data[0].PICTURE);
-          sock.broadcast.emit("enter chat", userHandler.getLastUser());
+      if (existing) bcyrpt.compare(password, data[0].USERPW, function(err,res){
+        if (res) {
+          sock.emit("login", true, name, password, data[0].PICTURE, existing);
+          socketList.push([sock, name]);
+          if (userHandler.checkUsername(name)) {
+            userHandler.addUser(name, data[0].PICTURE);
+            sock.broadcast.emit("enter chat", userHandler.getLastUser());
+          }
+        } else { // password wrong
+          sock.emit("login", false, name, "", "", existing);
         }
-      } else {
-        sock.emit("login", false, name, "", "", existing);
-      }
+        conn.close(function() {}); 
+      });
     });
-    conn.close(function() {});
   });
 }
 
 function createDbUser(data, sock) {
   ibmdb.open(dbString, function(err, conn) {
-    if (err) return console.log(err);
-    conn.query(
-      "INSERT into users values ('" +
-        data.username +
-        "', '" +
-        data.userpw +
-        "', ?, '" +
-        data.lastlogin +
-        "');",
-      [data.userpic],
-      function(err, data) {
-        if (err) {
-          console.log(err);
-          sock.emit("register", false);
-        } else {
-          console.log(data);
-          sock.emit("register", true);
-        }
+    if (err) console.log(err);
+
+    // hash password with 10 saltRounds
+    bcyrpt.hash(data.userpw, 10, function(err, hash) {
+      if (err) {
+        console.log(err);
+        sock.emit("register", false);
       }
-    );
-    conn.close(function() {});
+      
+      // save user with hashed pw into DB
+      conn.query(
+        "INSERT into users values ('" +
+          data.username +
+          "', '" +
+          hash +
+          "', ?, '" +
+          data.lastlogin +
+          "');",
+        [data.userpic],
+        function(err, data) {
+          if (err) {
+            console.log(err);
+            sock.emit("register", false);
+          } else {
+            console.log(data);
+            sock.emit("register", true);
+          }
+        }
+      );
+      conn.close(function() {});
+    });    
   });
 }
 
@@ -250,51 +235,48 @@ function checkFace(dataUri, socket, update, name) {
 
   var buf = Buffer.from(dataUri.data, "base64");
 
-  fs.writeFile(path.join(__dirname, "face." + type), buf, function(error) {
-    if (error) {
-      throw error;
+  var visualRecognition = new VisualRecognitionV3({
+    url: "https://gateway.watsonplatform.net/visual-recognition/api",
+    version: "2018-03-19",
+    iam_apikey: "7K6tDf8rFWkIMz_pcG5QZcTtKM6donGDTsT1QSKhqcoT"
+  });
+
+  var params = {
+    images_file: buf
+  };
+
+  visualRecognition.detectFaces(params, function(err, res) {
+    if (err) {
+      console.log(err);
     } else {
-      var visualRecognition = new VisualRecognitionV3({
-        url: "https://gateway.watsonplatform.net/visual-recognition/api",
-        version: "2018-03-19",
-        iam_apikey: "7K6tDf8rFWkIMz_pcG5QZcTtKM6donGDTsT1QSKhqcoT"
-      });
+      var faces = res.images[0].faces.length;
+      console.log("Faces detected: " + faces);
+      var passed = faces > 0;
 
-      console.log(path.join(__dirname, "face.") + type);
-
-      var params = {
-        images_file: fs.createReadStream(path.join(__dirname, "face.") + type)
-      };
-
-      visualRecognition.detectFaces(params, function(err, res) {
-        if (err) {
-          console.log(err);
-        } else {
-          var faces = res.images[0].faces.length;
-          console.log("Faces detected: " + faces);
-          var passed = faces > 0;
-
-          if (update) {
-            if (passed) changeDbPic(originalData, name);
-            socket.emit("change pic", passed, originalData);
-          } else {
-            socket.emit("face checked", passed);
-          }
-        }
-      });
-      return true;
+      if (update) {
+        if (passed) changeDbPic(originalData, name);
+        socket.emit("change pic", passed, originalData);
+      } else {
+        socket.emit("face checked", passed);
+      }
     }
   });
+  return true;
 }
 
+// SSL enforcement
 function requireHTTPS(req, res, next) {
   if (req.headers && req.headers.$wssp === "80") {
     return res.redirect("https://" + req.get("host") + req.url);
   }
   next();
 }
-
 app.use(requireHTTPS);
+app.use(
+  helmet.hsts({
+    maxAge: 5184000
+  })
+);
 
 // This is the command to start the server
 http.listen(port, function() {

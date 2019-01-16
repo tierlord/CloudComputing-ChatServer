@@ -27,14 +27,10 @@ $(document).ready(function() {
   }, 500);
 });
 
-function hash(s){
-  return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
-}
-
 function login() {
   var loginData = {
     username : $('#textfield').val(),
-    userpw : hash($('#textfield2').val())
+    userpw : $('#textfield2').val()
   }
   socket.emit("login", loginData);
   $("#overlay").fadeIn();
@@ -124,12 +120,11 @@ $("#textfield2").on("input", function() {
 $("#btn-okay").on("click", function(){
   var userData = {
     username: $("#textfield").val(),
-    userpw: hash($("#textfield2").val()),
+    userpw: $("#textfield2").val(),
     userpic: pic,
-    lastlogin: "26.11.2018"
+    lastlogin: getDate()
   };
 
-  console.log(pic.length);
   socket.emit("register", userData);
   $("#overlay").fadeIn();
 });
@@ -161,4 +156,12 @@ function disableLogin() {
 function enableLogin() {
   $( ":button" ).css('color','white');
   loginEnabled = true;
+}
+
+function getDate(){  
+  var fullDate = new Date()
+  var twoDigitMonth = ((fullDate.getMonth().length+1) === 1)? (fullDate.getMonth()+1) :(fullDate.getMonth()+1);
+  var currentDate = fullDate.getDate() + "/" + twoDigitMonth + "/" + fullDate.getFullYear();
+  return (currentDate);
+  // I wish it was that easy to get dates in real life
 }
