@@ -6,22 +6,16 @@ var express = require("express");
 var app = express();
 var helmet = require("helmet");
 var bcyrpt = require("bcrypt");
-var redisModule = require("redis");
-var RedisStore = require('connect-redis')(express);
-var rClient = redisModule.createClient();
-var sessionStore = new RedisStore({client:rClient});
+var fetch = require("node-fetch");
 var VisualRecognitionV3 = require("watson-developer-cloud/visual-recognition/v3"); // watson sdk
 var http = require("http").Server(app);
-const fetch = require("node-fetch");
-var io = require("session.socket.io")(http);
-var io = new SessionSockets(inout, sessionStore, cookieParser, 'jsessionid');
+var io = require("socket.io")(http);
 var port = process.env.PORT || 3000;
 
 var dbString =
   "DATABASE=BLUDB;HOSTNAME=dashdb-txn-sbox-yp-lon02-01.services.eu-gb.bluemix.net;PORT=50001;PROTOCOL=TCPIP;UID=wwz36807;PWD=wb2fttzm+cgl8nwv;Security=SSL";
 
 var userHandler = require("./userHandler");
-var dbHandler = require("./dbhandler");
 
 // This is to serve static files to the client
 app.use("/js", express.static("js"));
@@ -43,7 +37,7 @@ app.get("/chat/", function(req, res) {
 // [socketobject, username]
 socketList = [];
 
-io.on("connection", function(socket, session) {
+io.on("connection", function(socket) {
   // A hello event will be fired on connection. Here, the browser tells NodeJS
   // which username belongs to which socket
   socket.on("hello", function(usrnm, pw) {
@@ -147,30 +141,29 @@ function getDbUserByName(name, sock) {
 function checkDbAccount(name, password, sock) {
   ibmdb.open(dbString, function(err, conn) {
     if (err) return console.log(err);
-    conn.query("SELECT * FROM users where username = '" + name + "'", function(
-      err,
-      data
-    ) {
+    conn.query("SELECT * FROM users where username = '" + name + "'", function(err,data) {
       if (err) console.log(err);
       var existing = data.length != 0;
-      if (existing && data[0].USERPW == password) {
-        sock.emit("login", true, name, password, data[0].PICTURE, existing);
-        socketList.push([sock, name]);
-        if (userHandler.checkUsername(name)) {
-          userHandler.addUser(name, data[0].PICTURE);
-          sock.broadcast.emit("enter chat", userHandler.getLastUser());
+      if (existing) bcyrpt.compare(password, data[0].USERPW, function(err,res){
+        if (res) {
+          sock.emit("login", true, name, password, data[0].PICTURE, existing);
+          socketList.push([sock, name]);
+          if (userHandler.checkUsername(name)) {
+            userHandler.addUser(name, data[0].PICTURE);
+            sock.broadcast.emit("enter chat", userHandler.getLastUser());
+          }
+        } else { // password wrong
+          sock.emit("login", false, name, "", "", existing);
         }
-      } else {
-        sock.emit("login", false, name, "", "", existing);
-      }
+        conn.close(function() {}); 
+      });
     });
-    conn.close(function() {});
   });
 }
 
 function createDbUser(data, sock) {
   ibmdb.open(dbString, function(err, conn) {
-    if (err) return console.log(err);
+    if (err) console.log(err);
 
     // hash password with 10 saltRounds
     bcyrpt.hash(data.userpw, 10, function(err, hash) {
@@ -199,8 +192,8 @@ function createDbUser(data, sock) {
           }
         }
       );
-    });
-    conn.close(function() {});
+      conn.close(function() {});
+    });    
   });
 }
 
@@ -285,26 +278,9 @@ app.use(
   })
 );
 
-app.use(cookieParser);
-app.use(express.session({store:sessionStore, key:'jsessionid', secret:'secret'}));
-
 // This is the command to start the server
 http.listen(port, function() {
   console.log("listening on *:" + port);
 });
-
-// Connect to Redis
-var credentials;
-// Check if we are in Bluemix or localhost
-if(process.env.VCAP_SERVICES) {
-  var env = JSON.parse(process.env.VCAP_SERVICES);
-  credentials = env['redis-2.6'][0]['credentials'];
-} else {
-  credentials = { "host": "127.0.0.1", "port": 3000 }
-}
-var redis = redisModule.createClient(credentials.port, credentials.host);
-if('password' in credentials) {
-  redis.auth(credentials.password);
-}
 
 setInterval(broadcastList, 5000);

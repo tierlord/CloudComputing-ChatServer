@@ -125,7 +125,6 @@ $("#btn-okay").on("click", function(){
     lastlogin: getDate()
   };
 
-  console.log(pic.length);
   socket.emit("register", userData);
   $("#overlay").fadeIn();
 });
